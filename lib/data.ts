@@ -41,16 +41,11 @@ export async function getTransactions(): Promise<Transaction[]> {
         .select('*')
         .order('tanggal', { ascending: false });
 
-      if (!error && data && data.length > 0) {
-        return data as Transaction[];
-      }
-
-      if (!error && data && data.length === 0) {
-        const local = getLocalTransactions();
-        if (local.length > 0) {
-          return local;
-        }
-        return [];
+      // Supabase is the source of truth when it is configured. An empty
+      // result is valid and must not fall back to the bundled JSON snapshot;
+      // otherwise deleted rows reappear on Vercel after every reload.
+      if (!error) {
+        return (data ?? []) as Transaction[];
       }
       console.warn('Supabase fetch failed, falling back to local:', error?.message);
     } catch (e) {
