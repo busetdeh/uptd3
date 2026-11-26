@@ -52,25 +52,37 @@ VALUES
 ('2026-11-13', '4.1.2.02.01', 'Retribusi Parkir', 'Retribusi Parkir Pelataran Gedung Olahraga', 12700000, 'STS-2026-1136', 'Terverifikasi')
 ON CONFLICT (nomor_bukti) DO NOTHING;
 
--- 5. Aktifkan Row Level Security (RLS) & Policy Akses
+-- 5. Berikan Hak Akses ke Role anon & authenticated
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated;
+
+-- Aktifkan Row Level Security (RLS) & Policy Akses
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.targets ENABLE ROW LEVEL SECURITY;
 
 -- Kebijakan Akses: Izinkan baca dan tulis untuk anon & authenticated
+DROP POLICY IF EXISTS "Izinkan baca publik transaksi" ON public.transactions;
 CREATE POLICY "Izinkan baca publik transaksi" ON public.transactions
-    FOR SELECT USING (true);
+    FOR SELECT TO anon, authenticated USING (true);
 
+DROP POLICY IF EXISTS "Izinkan insert transaksi" ON public.transactions;
 CREATE POLICY "Izinkan insert transaksi" ON public.transactions
-    FOR INSERT WITH CHECK (true);
+    FOR INSERT TO anon, authenticated WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Izinkan update transaksi" ON public.transactions;
 CREATE POLICY "Izinkan update transaksi" ON public.transactions
-    FOR UPDATE USING (true);
+    FOR UPDATE TO anon, authenticated USING (true);
 
+DROP POLICY IF EXISTS "Izinkan baca publik target" ON public.targets;
 CREATE POLICY "Izinkan baca publik target" ON public.targets
-    FOR SELECT USING (true);
+    FOR SELECT TO anon, authenticated USING (true);
 
+DROP POLICY IF EXISTS "Izinkan update target" ON public.targets;
 CREATE POLICY "Izinkan update target" ON public.targets
-    FOR ALL USING (true);
+    FOR ALL TO anon, authenticated USING (true);
 
 -- 6. AKTIFKAN SUPABASE REALTIME (PENTING untuk Autosync)
 -- Perintah ini memancarkan setiap perubahan INSERT/UPDATE/DELETE melalui WebSocket
