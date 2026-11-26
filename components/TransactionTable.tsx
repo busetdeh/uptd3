@@ -57,10 +57,50 @@ export default function TransactionTable({
     }
   };
 
-  const pageSize = 5;
-  const totalPages = Math.ceil(transactions.length / pageSize) || 1;
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedRows = transactions.slice(startIndex, startIndex + pageSize);
+  // Custom rows per page state
+  const [pageSize, setPageSize] = React.useState<number>(10);
+  const [isAllSelected, setIsAllSelected] = React.useState<boolean>(false);
+  const [isCustom, setIsCustom] = React.useState<boolean>(false);
+  const [customInputValue, setCustomInputValue] = React.useState<string>('15');
+
+  const effectivePageSize = isAllSelected
+    ? Math.max(1, transactions.length)
+    : Math.max(1, pageSize);
+
+  const totalPages = Math.ceil(transactions.length / effectivePageSize) || 1;
+  const startIndex = (currentPage - 1) * effectivePageSize;
+  const paginatedRows = transactions.slice(startIndex, startIndex + effectivePageSize);
+
+  const handlePageSizeSelect = (val: string) => {
+    setCurrentPage(1);
+    if (val === 'all') {
+      setIsAllSelected(true);
+      setIsCustom(false);
+    } else if (val === 'custom') {
+      setIsCustom(true);
+      setIsAllSelected(false);
+      const parsed = parseInt(customInputValue, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        setPageSize(parsed);
+      }
+    } else {
+      setIsAllSelected(false);
+      setIsCustom(false);
+      const num = parseInt(val, 10);
+      if (!isNaN(num) && num > 0) {
+        setPageSize(num);
+      }
+    }
+  };
+
+  const handleCustomInputChange = (val: string) => {
+    setCustomInputValue(val);
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed > 0) {
+      setPageSize(parsed);
+      setCurrentPage(1);
+    }
+  };
 
   // Check if all rows on current page are selected
   const isAllCurrentPageSelected =
@@ -163,6 +203,45 @@ export default function TransactionTable({
                 placeholder="Cari no bukti, wajib pajak, kelurahan..."
                 className="w-full pl-10 pr-gutter-md py-gutter-sm rounded border border-light-outline-variant dark:border-dark-outline-variant bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-body text-body-sm focus:outline-none focus:ring-2 focus:ring-indigo transition-colors"
               />
+            </div>
+
+            {/* Rows Per Page Filter (Header) */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <label htmlFor="top-page-size" className="hidden lg:inline text-xs text-light-on-surface-variant dark:text-dark-on-surface-variant font-label">
+                Tampilkan:
+              </label>
+              <select
+                id="top-page-size"
+                aria-label="Pilih jumlah data per halaman"
+                value={isAllSelected ? 'all' : isCustom ? 'custom' : String(pageSize)}
+                onChange={(e) => handlePageSizeSelect(e.target.value)}
+                className="px-2.5 py-2 rounded border border-light-outline-variant dark:border-dark-outline-variant bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-label text-xs focus:ring-2 focus:ring-indigo cursor-pointer transition-colors"
+                title="Pilih jumlah baris data yang ditampilkan"
+              >
+                <option value="5">5 data</option>
+                <option value="10">10 data</option>
+                <option value="25">25 data</option>
+                <option value="50">50 data</option>
+                <option value="100">100 data</option>
+                <option value="all">Semua ({transactions.length})</option>
+                <option value="custom">Kustom...</option>
+              </select>
+
+              {isCustom && (
+                <div className="flex items-center gap-1 animate-in fade-in duration-100">
+                  <input
+                    type="number"
+                    min="1"
+                    max="1000"
+                    value={customInputValue}
+                    onChange={(e) => handleCustomInputChange(e.target.value)}
+                    className="w-16 px-2 py-2 rounded border border-light-outline-variant dark:border-dark-outline-variant bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-mono text-xs focus:ring-2 focus:ring-indigo"
+                    title="Ketik jumlah data kustom"
+                    placeholder="Jml"
+                  />
+                  <span className="text-xs text-light-on-surface-variant font-label hidden sm:inline">baris</span>
+                </div>
+              )}
             </div>
 
             {/* Kosongkan Semua Data Button */}
@@ -437,18 +516,44 @@ export default function TransactionTable({
         </ul>
 
         {/* Pagination Bar */}
-        <div className="px-gutter-md lg:px-gutter-lg py-gutter-sm lg:py-gutter-md border-t border-light-outline-variant dark:border-dark-outline-variant flex items-center justify-between gap-gutter-sm">
-          <span className="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
-            {transactions.length === 0
-              ? '0 data'
-              : `${startIndex + 1}–${Math.min(startIndex + pageSize, transactions.length)} dari ${transactions.length} transaksi`}
-          </span>
-          <div className="flex items-center gap-gutter-xs">
+        <div className="px-gutter-md lg:px-gutter-lg py-gutter-sm lg:py-gutter-md border-t border-light-outline-variant dark:border-dark-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-gutter-sm">
+          
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
+              {transactions.length === 0
+                ? '0 data'
+                : `${startIndex + 1}–${Math.min(startIndex + effectivePageSize, transactions.length)} dari ${transactions.length} transaksi`}
+            </span>
+
+            {/* Quick Rows selector in footer */}
+            <div className="inline-flex items-center gap-1.5 text-xs text-light-on-surface-variant dark:text-dark-on-surface-variant pl-2 border-l border-light-outline-variant dark:border-dark-outline-variant">
+              <label htmlFor="bottom-page-size" className="font-label">
+                Baris:
+              </label>
+              <select
+                id="bottom-page-size"
+                aria-label="Pilih jumlah baris di bagian bawah tabel"
+                value={isAllSelected ? 'all' : isCustom ? 'custom' : String(pageSize)}
+                onChange={(e) => handlePageSizeSelect(e.target.value)}
+                className="px-2 py-1 rounded border border-light-outline-variant dark:border-dark-outline-variant bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-label text-xs focus:ring-1 focus:ring-indigo cursor-pointer"
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="all">Semua</option>
+                <option value="custom">Kustom</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-gutter-xs self-end sm:self-auto">
             <button
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="px-gutter-sm py-gutter-xs rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm disabled:opacity-40"
+              className="px-gutter-sm py-gutter-xs rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm disabled:opacity-40 hover:bg-light-surface-container dark:hover:bg-dark-surface-container transition-colors"
             >
               Prev
             </button>
@@ -459,7 +564,7 @@ export default function TransactionTable({
               type="button"
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="px-gutter-sm py-gutter-xs rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm disabled:opacity-40"
+              className="px-gutter-sm py-gutter-xs rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm disabled:opacity-40 hover:bg-light-surface-container dark:hover:bg-dark-surface-container transition-colors"
             >
               Next
             </button>
