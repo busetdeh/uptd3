@@ -8,6 +8,7 @@ import CategoryDonut from '@/components/CategoryDonut';
 import TransactionTable from '@/components/TransactionTable';
 import CSVImportModal from '@/components/CSVImportModal';
 import { FilterState, Transaction, TargetBudget } from '@/lib/types';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 interface SummaryData {
   totalRealisasi: number;
@@ -47,8 +48,14 @@ export default function DashboardPage() {
   });
 
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isRealtimeConnected, setIsRealtimeConnected] = React.useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4500);
+  };
 
   // Fetch transactions based on filter state
   const loadData = React.useCallback(async () => {
@@ -82,6 +89,35 @@ export default function DashboardPage() {
     loadData();
   }, [loadData]);
 
+  // Supabase Realtime WebSocket listener
+  React.useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      setIsRealtimeConnected(false);
+      return;
+    }
+
+    const channel = supabase
+      .channel('realtime:dashboard_transactions')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'transactions' },
+        (payload) => {
+          console.log('Realtime postgres change received:', payload);
+          loadData();
+          showToast(`⚡ Realtime Update: Data pendapatan baru tersinkronisasi!`);
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          setIsRealtimeConnected(true);
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadData]);
+
   // Handle CSV Export
   const handleExportCSV = () => {
     if (transactions.length === 0) {
@@ -94,7 +130,7 @@ export default function DashboardPage() {
       t.tanggal,
       t.kode_rekening,
       `"${t.nama_kategori}"`,
-      `"${t.uraian_transaksi.replace(/"/g, '""')}"`,
+      `"${(t.uraian_transaksi || '').replace(/"/g, '""')}"`,
       t.nominal,
       t.nomor_bukti,
       t.status,
@@ -109,11 +145,6 @@ export default function DashboardPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 4500);
   };
 
   return (
@@ -134,6 +165,7 @@ export default function DashboardPage() {
         onOpenImportModal={() => setIsImportModalOpen(true)}
         onExportData={handleExportCSV}
         isAutosyncing={isLoading}
+        isRealtimeConnected={isRealtimeConnected}
       />
 
       {/* Main Dashboard Content */}

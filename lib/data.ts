@@ -1,25 +1,25 @@
 import fs from 'fs';
 import path from 'path';
 import { Transaction, TargetBudget, FilterState } from './types';
+import { isSupabaseConfigured, supabase } from './supabase';
 
 const dataDir = path.join(process.cwd(), 'data');
 const transactionsFile = path.join(dataDir, 'transactions.json');
 const targetsFile = path.join(dataDir, 'targets.json');
 
-export function getTransactions(): Transaction[] {
+// Synchronous fallback helper for local JSON
+export function getLocalTransactions(): Transaction[] {
   try {
-    if (!fs.existsSync(transactionsFile)) {
-      return [];
-    }
+    if (!fs.existsSync(transactionsFile)) return [];
     const content = fs.readFileSync(transactionsFile, 'utf-8');
     return JSON.parse(content) as Transaction[];
   } catch (error) {
-    console.error('Error reading transactions:', error);
+    console.error('Error reading local transactions:', error);
     return [];
   }
 }
 
-export function saveTransactions(transactions: Transaction[]): boolean {
+export function saveLocalTransactions(transactions: Transaction[]): boolean {
   try {
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
@@ -27,12 +27,81 @@ export function saveTransactions(transactions: Transaction[]): boolean {
     fs.writeFileSync(transactionsFile, JSON.stringify(transactions, null, 2), 'utf-8');
     return true;
   } catch (error) {
-    console.error('Error saving transactions:', error);
+    console.error('Error saving local transactions:', error);
     return false;
   }
 }
 
-export function getTargetBudget(): TargetBudget {
+// Async Fetch Transactions (Supabase with Local Fallback)
+export async function getTransactions(): Promise<Transaction[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('transactions')
+        .select('*')
+        .order('tanggal', { ascending: false });
+
+      if (!error && data) {
+        return data as Transaction[];
+      }
+      console.warn('Supabase fetch failed, falling back to local:', error?.message);
+    } catch (e) {
+      console.warn('Supabase query error, falling back to local:', e);
+    }
+  }
+
+  return getLocalTransactions();
+}
+
+// Async Save Transactions (Supabase with Local Fallback)
+export async function saveTransactions(transactions: Transaction[]): Promise<boolean> {
+  // Always update local file as backup
+  saveLocalTransactions(transactions);
+
+  if (isSupabaseConfigured()) {
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .upsert(transactions, { onConflict: 'nomor_bukti' });
+
+      if (error) {
+        console.error('Supabase save error:', error);
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.error('Supabase upsert exception:', e);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// Target Budget
+export async function getTargetBudget(): Promise<TargetBudget> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('targets')
+        .select('*')
+        .eq('tahun', 2026)
+        .eq('bulan', 11)
+        .single();
+
+      if (!error && data) {
+        return {
+          tahun: data.tahun,
+          bulan: data.bulan,
+          total_target: Number(data.total_target),
+          target_harian: Number(data.target_harian),
+        };
+      }
+    } catch (e) {
+      console.warn('Supabase target fetch error, using local:', e);
+    }
+  }
+
   try {
     if (!fs.existsSync(targetsFile)) {
       return {
@@ -44,8 +113,7 @@ export function getTargetBudget(): TargetBudget {
     }
     const content = fs.readFileSync(targetsFile, 'utf-8');
     return JSON.parse(content) as TargetBudget;
-  } catch (error) {
-    console.error('Error reading target:', error);
+  } catch {
     return {
       tahun: 2026,
       bulan: 11,
@@ -61,10 +129,10 @@ export function filterTransactions(transactions: Transaction[], filters: FilterS
     if (filters.searchQuery) {
       const q = filters.searchQuery.toLowerCase();
       const matchSearch =
-        tx.nomor_bukti.toLowerCase().includes(q) ||
-        tx.nama_kategori.toLowerCase().includes(q) ||
-        tx.uraian_transaksi.toLowerCase().includes(q) ||
-        tx.tanggal.includes(q);
+        tx.nomor_bukti?.toLowerCase().includes(q) ||
+        tx.nama_kategori?.toLowerCase().includes(q) ||
+        tx.uraian_transaksi?.toLowerCase().includes(q) ||
+        tx.tanggal?.includes(q);
       if (!matchSearch) return false;
     }
 
@@ -101,7 +169,7 @@ export function filterTransactions(transactions: Transaction[], filters: FilterS
 }
 
 export function calculateSummary(transactions: Transaction[], target: TargetBudget) {
-  const totalRealisasi = transactions.reduce((sum, tx) => sum + tx.nominal, 0);
+  const totalRealisasi = transactions.reduce((sum, tx) => sum + Number(tx.nominal || 0), 0);
   const targetNominal = target.total_target;
   const persentaseCapaian = targetNominal > 0 ? (totalRealisasi / targetNominal) * 100 : 0;
   const sisaTarget = Math.max(0, targetNominal - totalRealisasi);
@@ -110,7 +178,7 @@ export function calculateSummary(transactions: Transaction[], target: TargetBudg
   // Category breakdown
   const categoryMap: Record<string, number> = {};
   for (const tx of transactions) {
-    categoryMap[tx.nama_kategori] = (categoryMap[tx.nama_kategori] || 0) + tx.nominal;
+    categoryMap[tx.nama_kategori] = (categoryMap[tx.nama_kategori] || 0) + Number(tx.nominal || 0);
   }
 
   const categoryBreakdown = Object.entries(categoryMap).map(([name, total]) => ({
@@ -119,10 +187,10 @@ export function calculateSummary(transactions: Transaction[], target: TargetBudg
     percentage: totalRealisasi > 0 ? Math.round((total / totalRealisasi) * 100) : 0,
   }));
 
-  // Daily timeline (last 14 days or grouped)
+  // Daily timeline
   const dailyMap: Record<string, number> = {};
   for (const tx of transactions) {
-    dailyMap[tx.tanggal] = (dailyMap[tx.tanggal] || 0) + tx.nominal;
+    dailyMap[tx.tanggal] = (dailyMap[tx.tanggal] || 0) + Number(tx.nominal || 0);
   }
 
   const dailyTrend = Object.entries(dailyMap)

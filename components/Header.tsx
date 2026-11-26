@@ -11,6 +11,7 @@ interface HeaderProps {
   onOpenImportModal: () => void;
   onExportData: () => void;
   isAutosyncing?: boolean;
+  isRealtimeConnected?: boolean;
 }
 
 const MONTH_NAMES = [
@@ -24,6 +25,7 @@ export default function Header({
   onOpenImportModal,
   onExportData,
   isAutosyncing = false,
+  isRealtimeConnected = false,
 }: HeaderProps) {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -86,7 +88,7 @@ export default function Header({
               <div className="flex sm:hidden items-center gap-gutter-xs">
                 <span className={`w-2 h-2 rounded-full ${isAutosyncing ? 'bg-amber animate-pulse' : 'bg-emerald'}`} aria-hidden="true"></span>
                 <span className="font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
-                  {isAutosyncing ? 'Syncing...' : 'Autosync: Active'}
+                  {isAutosyncing ? 'Syncing...' : isRealtimeConnected ? 'Supabase: Live' : 'Autosync: Active'}
                 </span>
               </div>
             </div>
@@ -96,7 +98,7 @@ export default function Header({
           <div className="hidden sm:flex items-center gap-gutter-xs px-gutter-sm py-gutter-xs rounded-full bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant">
             <span className={`w-2 h-2 rounded-full ${isAutosyncing ? 'bg-amber animate-pulse' : 'bg-emerald'}`} aria-hidden="true"></span>
             <span className="font-label text-label-md text-light-on-surface dark:text-dark-on-surface">
-              {isAutosyncing ? 'Menyinkronkan...' : 'Autosync: Active'}
+              {isAutosyncing ? 'Menyinkronkan...' : isRealtimeConnected ? 'Supabase Realtime: Active' : 'Autosync: Active'}
             </span>
           </div>
 

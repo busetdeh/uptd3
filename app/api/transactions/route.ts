@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
       categoryFilter,
     };
 
-    const allTransactions = getTransactions();
-    const target = getTargetBudget();
+    const allTransactions = await getTransactions();
+    const target = await getTargetBudget();
     const filtered = filterTransactions(allTransactions, filters);
     const summary = calculateSummary(filtered, target);
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const all = getTransactions();
+    const all = await getTransactions();
 
     if (Array.isArray(body)) {
       // Bulk insert
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       }));
 
       const merged = [...newTransactions, ...all];
-      saveTransactions(merged);
+      await saveTransactions(merged);
 
       return NextResponse.json({
         success: true,
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       };
 
       all.unshift(newTx);
-      saveTransactions(all);
+      await saveTransactions(all);
 
       return NextResponse.json({
         success: true,

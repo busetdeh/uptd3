@@ -36,14 +36,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingTransactions = getTransactions();
-    const existingProofNumbers = new Set(existingTransactions.map((tx) => tx.nomor_bukti.toLowerCase()));
+    const existingTransactions = await getTransactions();
+    const existingProofNumbers = new Set(
+      existingTransactions.map((tx) => tx.nomor_bukti?.toLowerCase())
+    );
 
     const toInsert: Transaction[] = [];
     let skippedDuplicatesCount = 0;
 
     for (const row of result.validRows) {
-      if (preventDuplicates && existingProofNumbers.has(row.nomor_bukti.toLowerCase())) {
+      if (preventDuplicates && existingProofNumbers.has(row.nomor_bukti?.toLowerCase())) {
         skippedDuplicatesCount++;
         continue;
       }
@@ -57,12 +59,12 @@ export async function POST(request: NextRequest) {
 
     if (toInsert.length > 0) {
       const updatedList = [...toInsert, ...existingTransactions];
-      saveTransactions(updatedList);
+      await saveTransactions(updatedList);
     }
 
     return NextResponse.json({
       success: true,
-      message: `${toInsert.length} data transaksi berhasil diimpor dan disinkronkan ke database.${
+      message: `${toInsert.length} data transaksi berhasil diimpor dan disinkronkan.${
         skippedDuplicatesCount > 0 ? ` (${skippedDuplicatesCount} data duplikat dilewati)` : ''
       }`,
       importedCount: toInsert.length,
