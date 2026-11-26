@@ -28,6 +28,16 @@ export default function DateFilterPopover({
   const [startDate, setStartDate] = React.useState<string>(filters.startDate || '2026-11-01');
   const [endDate, setEndDate] = React.useState<string>(filters.endDate || '2026-11-25');
 
+  // Synchronize when filters prop changes
+  React.useEffect(() => {
+    setActiveTab(filters.mode);
+    if (filters.year) setSelectedYear(filters.year);
+    if (filters.month) setSelectedMonth(filters.month);
+    if (filters.singleDate) setSingleDate(filters.singleDate);
+    if (filters.startDate) setStartDate(filters.startDate);
+    if (filters.endDate) setEndDate(filters.endDate);
+  }, [filters]);
+
   const handleApply = () => {
     onApply({
       mode: activeTab,

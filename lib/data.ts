@@ -181,8 +181,9 @@ export function filterTransactions(transactions: Transaction[], filters: FilterS
         return txYear === filters.year;
       }
     } else if (filters.mode === 'kustom') {
-      if (filters.startDate && tx.tanggal < filters.startDate) return false;
-      if (filters.endDate && tx.tanggal > filters.endDate) return false;
+      const cleanDate = (tx.tanggal || '').trim().substring(0, 10);
+      if (filters.startDate && cleanDate < filters.startDate) return false;
+      if (filters.endDate && cleanDate > filters.endDate) return false;
       return true;
     }
 

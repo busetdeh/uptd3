@@ -3,6 +3,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
+import DateRangeFilterBar from '@/components/DateRangeFilterBar';
 import KPICards from '@/components/KPICards';
 import TransactionTable from '@/components/TransactionTable';
 import CSVImportModal from '@/components/CSVImportModal';
@@ -182,7 +183,13 @@ export default function DashboardPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `rekap_pendapatan_${filters.year}_${filters.month}.csv`);
+    const downloadName =
+      filters.mode === 'kustom'
+        ? `rekap_pendapatan_${filters.startDate || 'awal'}_sd_${filters.endDate || 'akhir'}.csv`
+        : filters.mode === 'harian'
+        ? `rekap_pendapatan_${filters.singleDate || 'hari_ini'}.csv`
+        : `rekap_pendapatan_${filters.year}_${filters.month}.csv`;
+    link.setAttribute('download', downloadName);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -223,6 +230,13 @@ export default function DashboardPage() {
       {/* Main Dashboard Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-gutter-md lg:px-gutter-lg py-gutter-md lg:py-gutter-lg pb-28 md:pb-gutter-lg flex flex-col gap-gutter-md lg:gap-gutter-lg">
         
+        {/* Custom Date Range & Period Filter Bar */}
+        <DateRangeFilterBar
+          filters={filters}
+          onFilterChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
+          totalTransactions={transactions.length}
+        />
+
         {/* Top KPI Cards (Target, Realisasi, %, Sisa) */}
         <KPICards
           totalRealisasi={summary.totalRealisasi}
@@ -238,7 +252,18 @@ export default function DashboardPage() {
           <TrendChart
             data={summary.dailyTrend}
             activeMode={filters.mode}
-            onModeChange={(mode) => setFilters((prev) => ({ ...prev, mode }))}
+            onModeChange={(mode) => {
+              if (mode === 'kustom') {
+                setFilters((prev) => ({
+                  ...prev,
+                  mode: 'kustom',
+                  startDate: prev.startDate || '2026-11-01',
+                  endDate: prev.endDate || '2026-11-25',
+                }));
+              } else {
+                setFilters((prev) => ({ ...prev, mode }));
+              }
+            }}
             targetHarian={target.target_harian}
           />
           <CategoryDonut categories={summary.categoryBreakdown} />
