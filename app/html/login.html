@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="id"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk — SIP-Pendapatan UPTD</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'slate-900': '#0F172A',
+        'emerald': '#10B981',
+        'indigo': '#6366F1',
+        'amber': '#F59E0B',
+        'crimson': '#EF4444',
+        'canvas-light': '#F8FAFC',
+        'canvas-dark': '#020617',
+        'light-primary': '#0F172A',
+        'light-on-primary': '#FFFFFF',
+        'light-primary-container': '#131B2E',
+        'light-on-primary-container': '#7C839B',
+        'light-secondary': '#006C49',
+        'light-on-secondary': '#FFFFFF',
+        'light-secondary-container': '#6CF8BB',
+        'light-on-secondary-container': '#00714D',
+        'light-tertiary': '#494BD6',
+        'light-on-tertiary': '#FFFFFF',
+        'light-tertiary-container': '#E1E0FF',
+        'light-on-tertiary-container': '#07006C',
+        'light-error': '#B91A24',
+        'light-on-error': '#FFFFFF',
+        'light-error-container': '#FFDAD7',
+        'light-on-error-container': '#930013',
+        'light-warning': '#855300',
+        'light-on-warning': '#FFFFFF',
+        'light-warning-container': '#FFDDB8',
+        'light-on-warning-container': '#2A1700',
+        'light-background': '#F8FAFC',
+        'light-on-background': '#0F172A',
+        'light-surface': '#F8FAFC',
+        'light-surface-dim': '#E2E8F0',
+        'light-surface-bright': '#FFFFFF',
+        'light-surface-container-lowest': '#FFFFFF',
+        'light-surface-container-low': '#F1F5F9',
+        'light-surface-container': '#E2E8F0',
+        'light-surface-container-high': '#CBD5E1',
+        'light-surface-container-highest': '#94A3B8',
+        'light-on-surface': '#0F172A',
+        'light-surface-variant': '#E2E2E9',
+        'light-on-surface-variant': '#45464D',
+        'light-outline': '#76777D',
+        'light-outline-variant': '#CBD5E1',
+        'dark-primary': '#BEC6E0',
+        'dark-on-primary': '#0F172A',
+        'dark-primary-container': '#0F172A',
+        'dark-on-primary-container': '#BEC6E0',
+        'dark-secondary': '#4EDEA3',
+        'dark-on-secondary': '#003824',
+        'dark-secondary-container': '#00A572',
+        'dark-on-secondary-container': '#002114',
+        'dark-tertiary': '#C0C1FF',
+        'dark-on-tertiary': '#1000A9',
+        'dark-tertiary-container': '#2F2EBE',
+        'dark-on-tertiary-container': '#E1E0FF',
+        'dark-error': '#FFB3AD',
+        'dark-on-error': '#68000A',
+        'dark-error-container': '#930013',
+        'dark-on-error-container': '#FFDAD7',
+        'dark-background': '#020617',
+        'dark-on-background': '#F8FAFC',
+        'dark-surface': '#020617',
+        'dark-surface-dim': '#020617',
+        'dark-surface-bright': '#1E293B',
+        'dark-surface-container-lowest': '#090F1D',
+        'dark-surface-container-low': '#0F172A',
+        'dark-surface-container': '#1E293B',
+        'dark-surface-container-high': '#334155',
+        'dark-surface-container-highest': '#475569',
+        'dark-on-surface': '#F8FAFC',
+        'dark-surface-variant': '#334155',
+        'dark-on-surface-variant': '#CBD5E1',
+        'dark-outline': '#94A3B8',
+        'dark-outline-variant': '#1E293B',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+      },
+      fontFamily: {
+        'display': ['"Inter"', 'sans-serif'],
+        'headline': ['"Inter"', 'sans-serif'],
+        'body': ['"Inter"', 'sans-serif'],
+        'label': ['"Inter"', 'sans-serif'],
+        'mono': ['"Spline Sans Mono"', 'monospace'],
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Spline+Sans+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+  </style>
+</head>
+<body class="min-h-screen bg-light-surface text-light-on-surface dark:bg-dark-surface dark:text-dark-on-surface font-body antialiased flex flex-col justify-between">
+
+  <!-- Minimal Header: Brand & Theme Toggle -->
+  <header class="w-full px-gutter-md sm:px-gutter-lg py-gutter-md flex items-center justify-between">
+    <div class="flex items-center gap-gutter-sm">
+      <div class="w-8 h-8 rounded bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-title-md" aria-hidden="true">account_balance</span>
+      </div>
+      <div>
+        <span class="font-headline text-title-md text-light-on-surface dark:text-dark-on-surface block leading-tight">SIP-Pendapatan UPTD</span>
+        <span class="font-body text-[11px] text-light-on-surface-variant dark:text-dark-on-surface-variant block">UPTD Pendapatan Daerah</span>
+      </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button id="theme-toggle-btn" type="button" aria-label="Ubah tema terang atau gelap" class="inline-flex items-center justify-center p-gutter-xs sm:p-gutter-sm rounded bg-light-surface-container-lowest text-light-on-surface-variant border border-light-outline-variant hover:bg-light-surface-container-low dark:bg-dark-surface-container-low dark:text-dark-on-surface-variant dark:border-dark-outline-variant dark:hover:bg-dark-surface-container transition-colors">
+      <span id="theme-toggle-icon" class="material-symbols-outlined text-title-md sm:text-headline-md" aria-hidden="true">dark_mode</span>
+    </button>
+  </header>
+
+  <!-- Login Card Section (Centered & Responsive) -->
+  <main class="w-full max-w-md mx-auto px-gutter-md py-gutter-lg flex-1 flex flex-col justify-center">
+    
+    <div class="w-full bg-light-surface-container-lowest dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded-lg p-gutter-lg sm:p-gutter-xl shadow-lg flex flex-col gap-gutter-lg">
+      
+      <!-- Card Title & Welcome -->
+      <div class="text-center flex flex-col gap-gutter-xs">
+        <div class="inline-flex self-center items-center justify-center w-12 h-12 rounded-full bg-light-secondary-container text-light-on-secondary-container dark:bg-dark-secondary-container dark:text-dark-on-secondary-container mb-gutter-xs">
+          <span class="material-symbols-outlined text-headline-lg" aria-hidden="true">lock</span>
+        </div>
+        <h1 class="font-headline text-headline-md sm:text-headline-lg text-light-on-surface dark:text-dark-on-surface">Masuk ke Sistem</h1>
+        <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
+          Silakan masukkan kredensial akun Anda untuk mengakses rekapitulasi pendapatan.
+        </p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" action="./index.html" method="get" class="flex flex-col gap-gutter-md">
+        
+        <!-- NIP / Username Field -->
+        <div class="flex flex-col gap-gutter-xs">
+          <label for="username" class="font-label text-label-md text-light-on-surface dark:text-dark-on-surface">
+            NIP / Nama Pengguna
+          </label>
+          <div class="relative">
+            <span class="material-symbols-outlined text-title-md text-light-outline dark:text-dark-outline absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">badge</span>
+            <input 
+              id="username" 
+              name="username" 
+              type="text" 
+              required 
+              autocomplete="username" 
+              value="operator.keuangan" 
+              placeholder="Contoh: 198503152010011002"
+              class="w-full pl-10 pr-gutter-md py-2.5 rounded border border-light-outline-variant dark:border-dark-outline-variant bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-body text-body-md focus:outline-none focus:ring-2 focus:ring-indigo transition-colors"
+            >
+          </div>
+        </div>
+
+        <!-- Password Field with Show/Hide Toggle -->
+        <div class="flex flex-col gap-gutter-xs">
+          <div class="flex items-center justify-between">
+            <label for="password" class="font-label text-label-md text-light-on-surface dark:text-dark-on-surface">
+              Kata Sandi
+            </label>
+            <a href="#" id="forgot-password-link" class="font-label text-label-sm text-light-tertiary dark:text-dark-tertiary hover:underline">
+              Lupa sandi?
+            </a>
+          </div>
+          <div class="relative">
+            <span class="material-symbols-outlined text-title-md text-light-outline dark:text-dark-outline absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">key</span>
+            <input 
+              id="password" 
+              name="password" 
+              type="password" 
+              required 
+              autocomplete="current-password" 
+              value="password123" 
+              placeholder="••••••••"
+              class="w-full pl-10 pr-10 py-2.5 rounded border border-light-outline-variant dark:border-dark-outline-variant bg-light-surface dark:bg-dark-surface text-light-on-surface dark:text-dark-on-surface font-body text-body-md focus:outline-none focus:ring-2 focus:ring-indigo transition-colors"
+            >
+            <button 
+              id="toggle-password-btn" 
+              type="button" 
+              aria-label="Tampilkan atau sembunyikan kata sandi" 
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-light-outline dark:text-dark-outline hover:text-light-on-surface dark:hover:text-dark-on-surface p-1"
+            >
+              <span id="password-toggle-icon" class="material-symbols-outlined text-title-md" aria-hidden="true">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Options: Remember Me & Role Badge -->
+        <div class="flex items-center justify-between gap-gutter-sm pt-gutter-xs">
+          <label class="inline-flex items-center gap-gutter-xs cursor-pointer select-none">
+            <input type="checkbox" id="remember-me" checked class="w-4 h-4 rounded border-light-outline-variant dark:border-dark-outline-variant text-light-secondary focus:ring-indigo">
+            <span class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Ingat sesi saya</span>
+          </label>
+          <span class="inline-flex items-center gap-gutter-xs px-2 py-0.5 rounded-full bg-light-surface-container dark:bg-dark-surface-container font-label text-[11px] text-light-on-surface-variant dark:text-dark-on-surface-variant">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald"></span>
+            Server Siap
+          </span>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          id="submit-login-btn" 
+          type="submit" 
+          class="w-full mt-gutter-xs py-3 px-gutter-md rounded bg-light-primary text-light-on-primary hover:bg-light-primary-container dark:bg-dark-primary dark:text-dark-on-primary font-label text-label-lg flex items-center justify-center gap-gutter-sm shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo active:scale-[0.99]"
+        >
+          <span>Masuk ke Dasbor</span>
+          <span class="material-symbols-outlined text-title-md" aria-hidden="true">arrow_forward</span>
+        </button>
+
+      </form>
+
+      <!-- Quick Demo Login Hints -->
+      <div class="pt-gutter-md border-t border-light-outline-variant dark:border-dark-outline-variant flex flex-col gap-gutter-xs text-center">
+        <span class="font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">Akun Uji Coba Cepat (Demo):</span>
+        <div class="flex flex-wrap items-center justify-center gap-gutter-xs">
+          <button type="button" class="demo-role-btn px-gutter-sm py-1 rounded bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant font-label text-[11px] text-light-on-surface dark:text-dark-on-surface hover:border-indigo" data-user="operator.keuangan">
+            Staf Operator
+          </button>
+          <button type="button" class="demo-role-btn px-gutter-sm py-1 rounded bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant font-label text-[11px] text-light-on-surface dark:text-dark-on-surface hover:border-indigo" data-user="kepala.uptd">
+            Kepala UPTD
+          </button>
+          <button type="button" class="demo-role-btn px-gutter-sm py-1 rounded bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant font-label text-[11px] text-light-on-surface dark:text-dark-on-surface hover:border-indigo" data-user="auditor.daerah">
+            Auditor BPKAD
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Simple Footer -->
+  <footer class="w-full px-gutter-md py-gutter-md text-center">
+    <p class="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
+      &copy; 2026 SIP-Pendapatan UPTD · Pemerintah Daerah
+    </p>
+  </footer>
+
+  <script>
+    (function () {
+      const htmlEl = document.documentElement;
+      const themeBtn = document.getElementById('theme-toggle-btn');
+      const themeIcon = document.getElementById('theme-toggle-icon');
+
+      // Theme toggle
+      if (themeBtn && themeIcon) {
+        themeBtn.addEventListener('click', function () {
+          const isDark = htmlEl.classList.toggle('dark');
+          themeIcon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        });
+      }
+
+      // Password visibility toggle
+      const pwdInput = document.getElementById('password');
+      const pwdToggleBtn = document.getElementById('toggle-password-btn');
+      const pwdToggleIcon = document.getElementById('password-toggle-icon');
+
+      if (pwdInput && pwdToggleBtn && pwdToggleIcon) {
+        pwdToggleBtn.addEventListener('click', function () {
+          const isPassword = pwdInput.type === 'password';
+          pwdInput.type = isPassword ? 'text' : 'password';
+          pwdToggleIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+          pwdToggleBtn.setAttribute('aria-label', isPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+        });
+      }
+
+      // Quick Demo account switcher
+      const usernameInput = document.getElementById('username');
+      const demoBtns = document.querySelectorAll('.demo-role-btn');
+      demoBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const user = btn.getAttribute('data-user');
+          if (usernameInput) {
+            usernameInput.value = user;
+            usernameInput.focus();
+          }
+        });
+      });
+    })();
+  </script>
+</body></html>
