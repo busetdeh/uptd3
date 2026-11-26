@@ -1,0 +1,112 @@
+[
+  {
+    "id": "tx-001",
+    "tanggal": "2026-11-25",
+    "kode_rekening": "4.1.2.01.01",
+    "nama_kategori": "Retribusi Pasar",
+    "uraian_transaksi": "Setoran Harian Kios Pasar Induk Blok A–D",
+    "nominal": 24500000,
+    "nomor_bukti": "STS-2026-1145",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-25T14:30:00Z"
+  },
+  {
+    "id": "tx-002",
+    "tanggal": "2026-11-25",
+    "kode_rekening": "4.1.2.02.01",
+    "nama_kategori": "Retribusi Parkir",
+    "uraian_transaksi": "Rekap Parkir Tepi Jalan Umum Zona Pusat",
+    "nominal": 14250000,
+    "nomor_bukti": "STS-2026-1144",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-25T12:15:00Z"
+  },
+  {
+    "id": "tx-003",
+    "tanggal": "2026-11-24",
+    "kode_rekening": "4.1.2.01.02",
+    "nama_kategori": "Retribusi Kebersihan",
+    "uraian_transaksi": "Pelayanan Persampahan Kawasan Niaga",
+    "nominal": 11800000,
+    "nomor_bukti": "STS-2026-1143",
+    "status": "Menunggu Rekonsiliasi",
+    "created_at": "2026-11-24T16:00:00Z"
+  },
+  {
+    "id": "tx-004",
+    "tanggal": "2026-11-24",
+    "kode_rekening": "4.1.2.01.01",
+    "nama_kategori": "Retribusi Pasar",
+    "uraian_transaksi": "Setoran Pelataran Pasar Baru Selatan",
+    "nominal": 18900000,
+    "nomor_bukti": "STS-2026-1142",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-24T11:45:00Z"
+  },
+  {
+    "id": "tx-005",
+    "tanggal": "2026-11-23",
+    "kode_rekening": "4.1.2.02.01",
+    "nama_kategori": "Retribusi Parkir",
+    "uraian_transaksi": "Parkir Khusus Terminal & Area Wisata",
+    "nominal": 16400000,
+    "nomor_bukti": "STS-2026-1141",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-23T15:20:00Z"
+  },
+  {
+    "id": "tx-006",
+    "tanggal": "2026-11-21",
+    "kode_rekening": "4.1.2.01.01",
+    "nama_kategori": "Retribusi Pasar",
+    "uraian_transaksi": "Retribusi Los Basah & Kios Buah",
+    "nominal": 22100000,
+    "nomor_bukti": "STS-2026-1140",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-21T10:00:00Z"
+  },
+  {
+    "id": "tx-007",
+    "tanggal": "2026-11-19",
+    "kode_rekening": "4.1.2.02.01",
+    "nama_kategori": "Retribusi Parkir",
+    "uraian_transaksi": "Setoran Juru Parkir Wilayah Timur",
+    "nominal": 19500000,
+    "nomor_bukti": "STS-2026-1139",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-19T14:10:00Z"
+  },
+  {
+    "id": "tx-008",
+    "tanggal": "2026-11-17",
+    "kode_rekening": "4.1.2.01.02",
+    "nama_kategori": "Retribusi Kebersihan",
+    "uraian_transaksi": "Iuran Retribusi Sampah Pemukiman Tahap 2",
+    "nominal": 15300000,
+    "nomor_bukti": "STS-2026-1138",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-17T09:30:00Z"
+  },
+  {
+    "id": "tx-009",
+    "tanggal": "2026-11-15",
+    "kode_rekening": "4.1.2.01.01",
+    "nama_kategori": "Retribusi Pasar",
+    "uraian_transaksi": "Sewa Kios Semi Permanen Blok C",
+    "nominal": 28400000,
+    "nomor_bukti": "STS-2026-1137",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-15T11:00:00Z"
+  },
+  {
+    "id": "tx-010",
+    "tanggal": "2026-11-13",
+    "kode_rekening": "4.1.2.02.01",
+    "nama_kategori": "Retribusi Parkir",
+    "uraian_transaksi": "Retribusi Parkir Pelataran Gedung Olahraga",
+    "nominal": 12700000,
+    "nomor_bukti": "STS-2026-1136",
+    "status": "Terverifikasi",
+    "created_at": "2026-11-13T16:30:00Z"
+  }
+]
