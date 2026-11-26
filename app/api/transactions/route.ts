@@ -107,23 +107,56 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(request: NextRequest) {
   try {
-    if (isSupabaseConfigured()) {
-      const { error } = await supabase.from('transactions').delete().neq('id', 'placeholder');
-      if (error) {
-        console.warn('Supabase delete error (mungkin butuh policy DELETE):', error.message);
-      }
+    let body: { ids?: string[]; all?: boolean } = {};
+    try {
+      body = await request.json();
+    } catch {
+      // Empty body or no JSON means delete all
     }
-    saveLocalTransactions([]);
-    return NextResponse.json({
-      success: true,
-      message: 'Seluruh data transaksi berhasil dikosongkan',
-    });
+
+    const { ids, all } = body;
+
+    if (ids && Array.isArray(ids) && ids.length > 0 && !all) {
+      // 1. Delete selected IDs
+      if (isSupabaseConfigured()) {
+        const { error } = await supabase.from('transactions').delete().in('id', ids);
+        if (error) {
+          console.warn('Supabase bulk delete error:', error.message);
+        }
+      }
+
+      // Update local storage
+      const current = await getTransactions();
+      const idSet = new Set(ids);
+      const remaining = current.filter((t) => !idSet.has(t.id));
+      saveLocalTransactions(remaining);
+
+      return NextResponse.json({
+        success: true,
+        message: `${ids.length} data transaksi berhasil dihapus`,
+        deletedCount: ids.length,
+      });
+    } else {
+      // 2. Delete ALL transactions
+      if (isSupabaseConfigured()) {
+        const { error } = await supabase.from('transactions').delete().neq('id', 'placeholder');
+        if (error) {
+          console.warn('Supabase delete all error:', error.message);
+        }
+      }
+
+      saveLocalTransactions([]);
+      return NextResponse.json({
+        success: true,
+        message: 'Seluruh data transaksi berhasil dikosongkan',
+      });
+    }
   } catch (error) {
     console.error('Delete Transaction Error:', error);
     return NextResponse.json(
-      { success: false, message: 'Gagal mengosongkan transaksi' },
+      { success: false, message: 'Gagal menghapus transaksi' },
       { status: 500 }
     );
   }

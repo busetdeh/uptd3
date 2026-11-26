@@ -225,6 +225,10 @@ export default function DashboardPage() {
           transactions={transactions}
           searchQuery={filters.searchQuery}
           onSearchChange={(q) => setFilters((prev) => ({ ...prev, searchQuery: q }))}
+          onDataChanged={() => {
+            loadData();
+            showToast('Data transaksi berhasil diperbarui');
+          }}
         />
 
       </main>
