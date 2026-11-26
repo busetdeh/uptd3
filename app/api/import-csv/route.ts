@@ -2,9 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { validateAndParseCSV } from '@/lib/csv';
 import { getTransactions, saveTransactions } from '@/lib/data';
 import { Transaction } from '@/lib/types';
+import { isRequestAuthenticated } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    // Verifikasi otentikasi login
+    if (!isRequestAuthenticated(request)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akses ditolak: Anda harus login untuk mengimpor data CSV.',
+        },
+        { status: 401 }
+      );
+    }
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const csvContent = formData.get('csvContent') as string | null;

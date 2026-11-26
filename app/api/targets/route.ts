@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTargetBudget } from '@/lib/data';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { isRequestAuthenticated } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 
@@ -13,6 +14,16 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Verifikasi otentikasi login
+    if (!isRequestAuthenticated(request)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akses ditolak: Anda harus login untuk mengubah target anggaran.',
+        },
+        { status: 401 }
+      );
+    }
     const body = await request.json();
     const current = await getTargetBudget();
     const updated = {

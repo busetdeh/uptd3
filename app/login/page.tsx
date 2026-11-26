@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { setClientAuth, getClientAuth } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,13 +14,20 @@ export default function LoginPage() {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   React.useEffect(() => {
+    // If already logged in, go directly to dashboard
+    const existing = getClientAuth();
+    if (existing) {
+      router.push('/');
+      return;
+    }
+
     const isDark = document.documentElement.classList.contains('dark') ||
       window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (isDark) {
       document.documentElement.classList.add('dark');
       setIsDarkMode(true);
     }
-  }, []);
+  }, [router]);
 
   const toggleDarkMode = () => {
     const nextDark = !isDarkMode;
@@ -35,6 +43,11 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!username.trim() || !password.trim()) return;
+
+    // Save auth session
+    setClientAuth(username.trim(), 'operator');
+
     // Redirect to dashboard
     router.push('/');
   };

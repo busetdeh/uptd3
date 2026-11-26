@@ -9,6 +9,7 @@ import CSVImportModal from '@/components/CSVImportModal';
 import EditTargetModal from '@/components/EditTargetModal';
 import { FilterState, Transaction, TargetBudget } from '@/lib/types';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { getClientAuth, clearClientAuth, AuthUser } from '@/lib/auth';
 
 const TrendChart = dynamic(() => import('@/components/TrendChart'), {
   ssr: false,
@@ -67,6 +68,7 @@ export default function DashboardPage() {
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRealtimeConnected, setIsRealtimeConnected] = React.useState(false);
+  const [authUser, setAuthUser] = React.useState<AuthUser | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
   const [isEditTargetModalOpen, setIsEditTargetModalOpen] = React.useState(false);
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
@@ -74,6 +76,17 @@ export default function DashboardPage() {
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4500);
+  };
+
+  // Check login state on mount
+  React.useEffect(() => {
+    setAuthUser(getClientAuth());
+  }, []);
+
+  const handleLogout = () => {
+    clearClientAuth();
+    setAuthUser(null);
+    showToast('Anda telah keluar dari sesi.');
   };
 
   // Fetch transactions based on filter state
@@ -190,10 +203,20 @@ export default function DashboardPage() {
       <Header
         filters={filters}
         onFilterChange={(newFilters) => setFilters((prev) => ({ ...prev, ...newFilters }))}
-        onOpenImportModal={() => setIsImportModalOpen(true)}
+        onOpenImportModal={() => {
+          if (!authUser) {
+            showToast('Silakan masuk terlebih dahulu untuk mengimpor CSV.');
+            window.location.href = '/login';
+            return;
+          }
+          setIsImportModalOpen(true);
+        }}
         onExportData={handleExportCSV}
         isAutosyncing={isLoading}
         isRealtimeConnected={isRealtimeConnected}
+        isLoggedIn={Boolean(authUser)}
+        username={authUser?.username}
+        onLogout={handleLogout}
       />
 
       {/* Main Dashboard Content */}
@@ -206,7 +229,7 @@ export default function DashboardPage() {
           persentaseCapaian={summary.persentaseCapaian}
           sisaTarget={summary.sisaTarget}
           surplus={summary.surplus}
-          onEditTarget={() => setIsEditTargetModalOpen(true)}
+          onEditTarget={authUser ? () => setIsEditTargetModalOpen(true) : undefined}
         />
 
         {/* Charts Section: Left (Dual-Axis Trend) & Right (Donut Category) */}
@@ -229,6 +252,7 @@ export default function DashboardPage() {
             loadData();
             showToast('Data transaksi berhasil diperbarui');
           }}
+          isLoggedIn={Boolean(authUser)}
         />
 
       </main>

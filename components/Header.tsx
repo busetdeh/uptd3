@@ -12,6 +12,9 @@ interface HeaderProps {
   onExportData: () => void;
   isAutosyncing?: boolean;
   isRealtimeConnected?: boolean;
+  isLoggedIn?: boolean;
+  username?: string;
+  onLogout?: () => void;
 }
 
 const MONTH_NAMES = [
@@ -26,6 +29,9 @@ export default function Header({
   onExportData,
   isAutosyncing = false,
   isRealtimeConnected = false,
+  isLoggedIn = false,
+  username,
+  onLogout,
 }: HeaderProps) {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -102,7 +108,7 @@ export default function Header({
             </span>
           </div>
 
-          {/* Mobile Right Controls: Dark Mode & Logout */}
+          {/* Mobile Right Controls: Dark Mode & Auth */}
           <div className="flex md:hidden items-center gap-gutter-xs">
             <button
               onClick={toggleDarkMode}
@@ -114,13 +120,25 @@ export default function Header({
                 {isDarkMode ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
-            <Link
-              href="/login"
-              title="Keluar / Logout"
-              className="inline-flex items-center justify-center p-gutter-xs rounded bg-light-surface-container-lowest text-light-on-surface-variant border border-light-outline-variant hover:bg-light-surface-container-low dark:bg-dark-surface-container-low dark:text-dark-on-surface-variant dark:border-dark-outline-variant dark:hover:bg-dark-surface-container"
-            >
-              <span className="material-symbols-outlined text-title-md" aria-hidden="true">logout</span>
-            </Link>
+            {isLoggedIn ? (
+              <button
+                onClick={onLogout}
+                type="button"
+                title="Keluar / Logout"
+                className="inline-flex items-center justify-center p-gutter-xs rounded bg-light-surface-container-lowest text-light-on-surface-variant border border-light-outline-variant hover:bg-light-surface-container-low dark:bg-dark-surface-container-low dark:text-dark-on-surface-variant dark:border-dark-outline-variant dark:hover:bg-dark-surface-container"
+              >
+                <span className="material-symbols-outlined text-title-md" aria-hidden="true">logout</span>
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                title="Masuk / Login"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary font-label text-xs font-semibold"
+              >
+                <span className="material-symbols-outlined text-sm" aria-hidden="true">login</span>
+                <span>Masuk</span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -183,23 +201,56 @@ export default function Header({
           </button>
 
           {/* + Import CSV Button */}
-          <button
-            onClick={onOpenImportModal}
-            type="button"
-            className="inline-flex items-center justify-center gap-gutter-xs sm:gap-gutter-sm px-gutter-sm sm:px-gutter-md py-gutter-xs sm:py-gutter-sm rounded bg-light-primary text-light-on-primary hover:bg-light-primary-container dark:bg-dark-primary dark:text-dark-on-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo whitespace-nowrap shadow-sm active:scale-95"
-          >
-            <span className="material-symbols-outlined text-body-md sm:text-title-md" aria-hidden="true">upload_file</span>
-            <span className="font-label text-label-sm sm:text-label-lg">+ Import CSV</span>
-          </button>
+          {isLoggedIn ? (
+            <button
+              onClick={onOpenImportModal}
+              type="button"
+              className="inline-flex items-center justify-center gap-gutter-xs sm:gap-gutter-sm px-gutter-sm sm:px-gutter-md py-gutter-xs sm:py-gutter-sm rounded bg-light-primary text-light-on-primary hover:bg-light-primary-container dark:bg-dark-primary dark:text-dark-on-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo whitespace-nowrap shadow-sm active:scale-95"
+            >
+              <span className="material-symbols-outlined text-body-md sm:text-title-md" aria-hidden="true">upload_file</span>
+              <span className="font-label text-label-sm sm:text-label-lg">+ Import CSV</span>
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              title="Masuk untuk mengimpor berkas CSV"
+              className="inline-flex items-center justify-center gap-gutter-xs sm:gap-gutter-sm px-gutter-sm sm:px-gutter-md py-gutter-xs sm:py-gutter-sm rounded bg-light-surface-container-low text-light-on-surface-variant hover:border-indigo border border-light-outline-variant dark:bg-dark-surface-container dark:text-dark-on-surface-variant transition-colors whitespace-nowrap shadow-sm text-label-sm sm:text-label-lg"
+            >
+              <span className="material-symbols-outlined text-body-md text-amber" aria-hidden="true">lock</span>
+              <span className="font-label text-label-sm sm:text-label-lg">+ Import CSV</span>
+            </Link>
+          )}
 
-          {/* Desktop Logout Button */}
-          <Link
-            href="/login"
-            title="Keluar / Logout"
-            className="hidden md:inline-flex items-center justify-center p-gutter-sm rounded bg-light-surface-container-lowest text-light-on-surface-variant border border-light-outline-variant hover:bg-light-surface-container-low dark:bg-dark-surface-container-low dark:text-dark-on-surface-variant dark:border-dark-outline-variant dark:hover:bg-dark-surface-container transition-colors"
-          >
-            <span className="material-symbols-outlined text-headline-md" aria-hidden="true">logout</span>
-          </Link>
+          {/* Desktop Auth Section */}
+          {isLoggedIn ? (
+            <div className="hidden md:flex items-center gap-2 pl-2 border-l border-light-outline-variant dark:border-dark-outline-variant">
+              <div className="hidden lg:flex flex-col text-right">
+                <span className="font-label text-label-xs text-light-on-surface dark:text-dark-on-surface font-semibold truncate max-w-[100px]">
+                  {username || 'Operator'}
+                </span>
+                <span className="text-[10px] text-light-on-surface-variant dark:text-dark-on-surface-variant leading-none">
+                  Petugas
+                </span>
+              </div>
+              <button
+                onClick={onLogout}
+                type="button"
+                title="Keluar / Logout"
+                className="inline-flex items-center justify-center p-gutter-sm rounded bg-light-surface-container-lowest text-light-on-surface-variant border border-light-outline-variant hover:bg-light-error-container hover:text-light-error dark:bg-dark-surface-container-low dark:text-dark-on-surface-variant dark:border-dark-outline-variant dark:hover:bg-dark-error-container/30 dark:hover:text-dark-error transition-colors"
+              >
+                <span className="material-symbols-outlined text-headline-md" aria-hidden="true">logout</span>
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              title="Masuk ke Akun Petugas"
+              className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary font-label text-label-sm font-semibold hover:opacity-90 shadow-sm transition-opacity"
+            >
+              <span className="material-symbols-outlined text-body-md" aria-hidden="true">login</span>
+              <span>Masuk</span>
+            </Link>
+          )}
 
         </div>
       </div>
@@ -239,15 +290,27 @@ export default function Header({
         </button>
 
         {/* 3. + Import CSV Button (Primary Action) */}
-        <button
-          onClick={onOpenImportModal}
-          type="button"
-          aria-label="Import Berkas CSV"
-          className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-full bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary font-label text-label-xs font-semibold shadow-md active:scale-95 transition-all flex-shrink-0"
-        >
-          <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
-          <span>+ Import</span>
-        </button>
+        {isLoggedIn ? (
+          <button
+            onClick={onOpenImportModal}
+            type="button"
+            aria-label="Import Berkas CSV"
+            className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-full bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary font-label text-label-xs font-semibold shadow-md active:scale-95 transition-all flex-shrink-0"
+          >
+            <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
+            <span>+ Import</span>
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            aria-label="Masuk untuk import CSV"
+            className="flex items-center justify-center gap-1 px-3 py-2 rounded-full bg-light-surface-container-low dark:bg-dark-surface-container text-light-on-surface-variant dark:text-dark-on-surface-variant border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-xs font-medium flex-shrink-0"
+            title="Masuk untuk import CSV"
+          >
+            <span className="material-symbols-outlined text-base text-amber" aria-hidden="true">lock</span>
+            <span>+ Import</span>
+          </Link>
+        )}
       </nav>
 
       {/* Popover on Mobile (when opened from floating bottom bar) */}

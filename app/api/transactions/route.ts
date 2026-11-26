@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getTransactions, getTargetBudget, filterTransactions, calculateSummary, saveTransactions, saveLocalTransactions } from '@/lib/data';
 import { FilterState, Transaction, TimeFilterMode } from '@/lib/types';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { isRequestAuthenticated } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
@@ -109,6 +110,16 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // Verifikasi otentikasi login
+    if (!isRequestAuthenticated(request)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akses ditolak: Anda harus login terlebih dahulu untuk menghapus transaksi.',
+        },
+        { status: 401 }
+      );
+    }
     let body: { ids?: string[]; all?: boolean } = {};
     try {
       body = await request.json();

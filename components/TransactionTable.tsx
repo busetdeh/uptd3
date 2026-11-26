@@ -9,6 +9,7 @@ interface TransactionTableProps {
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onDataChanged?: () => void;
+  isLoggedIn?: boolean;
 }
 
 export default function TransactionTable({
@@ -16,6 +17,7 @@ export default function TransactionTable({
   searchQuery,
   onSearchChange,
   onDataChanged,
+  isLoggedIn = false,
 }: TransactionTableProps) {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
@@ -135,7 +137,7 @@ export default function TransactionTable({
             </div>
 
             {/* Kosongkan Semua Data Button */}
-            {transactions.length > 0 && (
+            {isLoggedIn && transactions.length > 0 && (
               <button
                 type="button"
                 onClick={() =>
@@ -155,8 +157,23 @@ export default function TransactionTable({
           </div>
         </div>
 
+        {/* Guest Mode Notice Banner */}
+        {!isLoggedIn && (
+          <div className="px-gutter-md sm:px-gutter-lg py-2.5 bg-amber/10 border-b border-amber/30 text-amber-700 dark:text-amber-300 flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-base text-amber flex-shrink-0" aria-hidden="true">info</span>
+              <span>
+                <strong>Mode Tamu (Hanya Lihat):</strong> Anda dapat melihat dan mengekspor data. Masuk sebagai petugas untuk menghapus transaksi atau mengimpor berkas CSV.
+              </span>
+            </div>
+            <a href="/login" className="font-semibold underline hover:text-amber-800 dark:hover:text-amber-200 flex-shrink-0">
+              Masuk &rarr;
+            </a>
+          </div>
+        )}
+
         {/* Bulk Action Banner (Appears when items are selected) */}
-        {selectedIds.size > 0 && (
+        {isLoggedIn && selectedIds.size > 0 && (
           <div className="px-gutter-md sm:px-gutter-lg py-2.5 bg-light-surface-container dark:bg-dark-surface-container border-b border-light-outline-variant dark:border-dark-outline-variant flex flex-wrap items-center justify-between gap-gutter-sm animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center gap-gutter-sm">
               <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary font-label text-xs font-semibold">
@@ -207,15 +224,17 @@ export default function TransactionTable({
           <table className="w-full text-left border-collapse">
             <thead className="bg-light-surface-container-low dark:bg-dark-surface-container border-b border-light-outline-variant dark:border-dark-outline-variant">
               <tr>
-                <th className="w-10 px-gutter-md py-gutter-sm">
-                  <input
-                    type="checkbox"
-                    checked={isAllCurrentPageSelected}
-                    onChange={handleToggleSelectPage}
-                    aria-label="Pilih semua transaksi pada halaman ini"
-                    className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo"
-                  />
-                </th>
+                {isLoggedIn && (
+                  <th className="w-10 px-gutter-md py-gutter-sm">
+                    <input
+                      type="checkbox"
+                      checked={isAllCurrentPageSelected}
+                      onChange={handleToggleSelectPage}
+                      aria-label="Pilih semua transaksi pada halaman ini"
+                      className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo"
+                    />
+                  </th>
+                )}
                 <th className="px-gutter-md py-gutter-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Tanggal</th>
                 <th className="px-gutter-md py-gutter-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">No Bukti / NOP</th>
                 <th className="px-gutter-md py-gutter-sm font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">Kategori</th>
@@ -227,7 +246,7 @@ export default function TransactionTable({
             <tbody className="divide-y divide-light-outline-variant dark:divide-dark-outline-variant">
               {paginatedRows.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-gutter-lg py-gutter-lg text-center text-light-on-surface-variant">
+                  <td colSpan={isLoggedIn ? 7 : 6} className="px-gutter-lg py-gutter-lg text-center text-light-on-surface-variant">
                     Tidak ada transaksi yang cocok.
                   </td>
                 </tr>
@@ -241,15 +260,17 @@ export default function TransactionTable({
                         isChecked ? 'bg-light-surface-container/60 dark:bg-dark-surface-container/60' : ''
                       }`}
                     >
-                      <td className="w-10 px-gutter-md py-gutter-md">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => handleToggleRow(tx.id)}
-                          aria-label={`Pilih transaksi ${tx.nomor_bukti}`}
-                          className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo"
-                        />
-                      </td>
+                      {isLoggedIn && (
+                        <td className="w-10 px-gutter-md py-gutter-md">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => handleToggleRow(tx.id)}
+                            aria-label={`Pilih transaksi ${tx.nomor_bukti}`}
+                            className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo"
+                          />
+                        </td>
+                      )}
                       <td className="px-gutter-md py-gutter-md tabular-nums whitespace-nowrap font-body text-body-md">
                         {tx.tanggal}
                       </td>
@@ -306,13 +327,15 @@ export default function TransactionTable({
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => handleToggleRow(tx.id)}
-                        aria-label={`Pilih transaksi ${tx.nomor_bukti}`}
-                        className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo flex-shrink-0"
-                      />
+                      {isLoggedIn && (
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => handleToggleRow(tx.id)}
+                          aria-label={`Pilih transaksi ${tx.nomor_bukti}`}
+                          className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo flex-shrink-0"
+                        />
+                      )}
                       <div className="flex flex-col min-w-0">
                         <span className="font-mono text-mono-xs sm:text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant truncate max-w-[180px]" title={tx.nomor_bukti}>
                           {tx.nomor_bukti}
