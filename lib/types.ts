@@ -31,12 +31,24 @@ export interface FilterState {
 }
 
 export interface CSVParseRow {
+  // Standard fields
   tanggal?: string;
   kode_rekening?: string;
   nama_kategori?: string;
   uraian_transaksi?: string;
   nominal?: string | number;
   nomor_bukti?: string;
+
+  // PBB / Pajak & Retribusi custom fields from user tables
+  no?: string | number;
+  wajib_pajak?: string;
+  nop?: string;
+  tanggal_bayar?: string;
+  tgl_bayar?: string;
+  jumlah_pembayaran?: string | number;
+  jumlah?: string | number;
+  keterangan?: string;
+  [key: string]: unknown;
 }
 
 export interface CSVValidationError {
