@@ -197,7 +197,7 @@ export default function DashboardPage() {
       />
 
       {/* Main Dashboard Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-gutter-md lg:px-gutter-lg py-gutter-md lg:py-gutter-lg flex flex-col gap-gutter-md lg:gap-gutter-lg">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-gutter-md lg:px-gutter-lg py-gutter-md lg:py-gutter-lg pb-28 md:pb-gutter-lg flex flex-col gap-gutter-md lg:gap-gutter-lg">
         
         {/* Top KPI Cards (Target, Realisasi, %, Sisa) */}
         <KPICards

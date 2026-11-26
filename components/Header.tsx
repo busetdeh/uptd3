@@ -124,8 +124,8 @@ export default function Header({
           </div>
         </div>
 
-        {/* Global Action Group */}
-        <div className="flex items-center justify-between md:justify-end gap-gutter-xs sm:gap-gutter-sm relative">
+        {/* Desktop Global Action Group (Hidden on Mobile) */}
+        <div className="hidden md:flex items-center justify-end gap-gutter-xs sm:gap-gutter-sm relative">
           
           {/* Interactive Date Filter Pill */}
           <div className="relative flex-1 md:flex-initial">
@@ -143,10 +143,11 @@ export default function Header({
               <span className="material-symbols-outlined text-body-md sm:text-title-md text-light-on-surface-variant dark:text-dark-on-surface-variant" aria-hidden="true">expand_more</span>
             </button>
 
-            {/* Filter Popover Dropdown */}
+            {/* Filter Popover Dropdown (Desktop Top Placement) */}
             {isFilterOpen && (
               <DateFilterPopover
                 filters={filters}
+                placement="top"
                 onApply={(newFilters) => {
                   onFilterChange(newFilters);
                   setIsFilterOpen(false);
@@ -202,6 +203,67 @@ export default function Header({
 
         </div>
       </div>
+
+      {/* Mobile Floating Bottom Bar */}
+      <nav
+        aria-label="Navigasi Aksi Mobile"
+        className="md:hidden fixed bottom-4 inset-x-3 z-40 max-w-md mx-auto bg-light-surface-container-lowest/95 dark:bg-dark-surface-container-low/95 backdrop-blur-lg border border-light-outline-variant/80 dark:border-dark-outline-variant/80 rounded-full shadow-2xl p-1.5 flex items-center justify-between gap-1.5 transition-all"
+      >
+        {/* 1. Date Filter Trigger Button */}
+        <button
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+          type="button"
+          aria-label="Filter Periode Tanggal"
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-full bg-light-surface-container-low dark:bg-dark-surface-container text-light-on-surface dark:text-dark-on-surface font-label text-label-xs truncate hover:border-indigo transition-colors min-w-0"
+        >
+          <span className="material-symbols-outlined text-base text-indigo flex-shrink-0" aria-hidden="true">
+            calendar_month
+          </span>
+          <span className="truncate max-w-[120px] font-medium">
+            {getActiveFilterLabel()}
+          </span>
+          <span className="material-symbols-outlined text-sm opacity-60 flex-shrink-0" aria-hidden="true">
+            {isFilterOpen ? 'expand_less' : 'expand_more'}
+          </span>
+        </button>
+
+        {/* 2. Export Button */}
+        <button
+          onClick={onExportData}
+          type="button"
+          aria-label="Export Data CSV"
+          className="flex items-center justify-center gap-1 px-3 py-2 rounded-full bg-light-surface-container-low dark:bg-dark-surface-container text-light-on-surface dark:text-dark-on-surface font-label text-label-xs flex-shrink-0 hover:bg-light-surface-container dark:hover:bg-dark-surface-container-high transition-colors"
+        >
+          <span className="material-symbols-outlined text-base" aria-hidden="true">download</span>
+          <span>Export</span>
+        </button>
+
+        {/* 3. + Import CSV Button (Primary Action) */}
+        <button
+          onClick={onOpenImportModal}
+          type="button"
+          aria-label="Import Berkas CSV"
+          className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-full bg-light-primary text-light-on-primary dark:bg-dark-primary dark:text-dark-on-primary font-label text-label-xs font-semibold shadow-md active:scale-95 transition-all flex-shrink-0"
+        >
+          <span className="material-symbols-outlined text-base" aria-hidden="true">upload_file</span>
+          <span>+ Import</span>
+        </button>
+      </nav>
+
+      {/* Popover on Mobile (when opened from floating bottom bar) */}
+      {isFilterOpen && (
+        <div className="md:hidden">
+          <DateFilterPopover
+            filters={filters}
+            placement="bottom"
+            onApply={(newFilters) => {
+              onFilterChange(newFilters);
+              setIsFilterOpen(false);
+            }}
+            onClose={() => setIsFilterOpen(false)}
+          />
+        </div>
+      )}
     </header>
   );
 }

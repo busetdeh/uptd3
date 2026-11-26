@@ -7,6 +7,7 @@ interface DateFilterPopoverProps {
   filters: FilterState;
   onApply: (newFilters: Partial<FilterState>) => void;
   onClose: () => void;
+  placement?: 'top' | 'bottom';
 }
 
 const MONTHS = [
@@ -18,6 +19,7 @@ export default function DateFilterPopover({
   filters,
   onApply,
   onClose,
+  placement = 'top',
 }: DateFilterPopoverProps) {
   const [activeTab, setActiveTab] = React.useState<TimeFilterMode>(filters.mode);
   const [selectedYear, setSelectedYear] = React.useState<number>(filters.year);
@@ -55,7 +57,21 @@ export default function DateFilterPopover({
   };
 
   return (
-    <div className="absolute left-0 right-0 md:left-auto md:right-0 top-full mt-gutter-sm w-full md:w-[540px] z-50 rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl p-gutter-md sm:p-gutter-lg animate-in fade-in zoom-in-95 duration-100">
+    <>
+      {/* Backdrop overlay to close on outside click */}
+      <div
+        className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-[2px] transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <div
+        className={`z-50 rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl p-gutter-md sm:p-gutter-lg animate-in fade-in duration-100 ${
+          placement === 'bottom'
+            ? 'fixed left-3 right-3 bottom-20 sm:left-auto sm:right-6 sm:bottom-20 w-auto sm:w-[500px] zoom-in-95'
+            : 'absolute left-0 right-0 md:left-auto md:right-0 top-full mt-gutter-sm w-full md:w-[540px] zoom-in-95'
+        }`}
+      >
       
       {/* Segmented Mode Tabs */}
       <div className="grid grid-cols-4 gap-gutter-xs p-gutter-xs rounded bg-light-surface-container-low dark:bg-dark-surface-container mb-gutter-md">
@@ -259,5 +275,6 @@ export default function DateFilterPopover({
       </div>
 
     </div>
-  );
+  </>
+);
 }
