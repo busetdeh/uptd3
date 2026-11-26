@@ -3,12 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { setClientAuth, getClientAuth } from '@/lib/auth';
+import { setClientAuth, getClientAuth, REGISTERED_USERS } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = React.useState('operator.keuangan');
-  const [password, setPassword] = React.useState('password123');
+  const [username, setUsername] = React.useState('081280433030');
+  const [password, setPassword] = React.useState('Cilegon321!');
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = React.useState(true);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
@@ -43,10 +44,28 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || !password.trim()) return;
+    setErrorMessage(null);
+    const trimmedUser = username.trim();
+    const trimmedPass = password.trim();
+    if (!trimmedUser || !trimmedPass) {
+      setErrorMessage('Harap masukkan nomor pengguna dan kata sandi.');
+      return;
+    }
+
+    // Verify credentials
+    const matched = REGISTERED_USERS.find(
+      (u) =>
+        u.username.toLowerCase() === trimmedUser.toLowerCase() &&
+        u.password === trimmedPass
+    );
+
+    if (!matched) {
+      setErrorMessage('Nomor pengguna atau kata sandi tidak cocok. Silakan periksa kembali.');
+      return;
+    }
 
     // Save auth session
-    setClientAuth(username.trim(), 'operator');
+    setClientAuth(matched.username, matched.role, matched.displayName);
 
     // Redirect to dashboard
     router.push('/');
@@ -99,6 +118,14 @@ export default function LoginPage() {
               Silakan masukkan kredensial akun Anda untuk mengakses rekapitulasi pendapatan.
             </p>
           </div>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="p-3 rounded bg-crimson/10 border border-crimson/30 text-crimson font-body text-body-sm flex items-center gap-2 animate-in fade-in duration-150">
+              <span className="material-symbols-outlined text-title-md flex-shrink-0" aria-hidden="true">error</span>
+              <span>{errorMessage}</span>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-gutter-md">
             
@@ -192,19 +219,42 @@ export default function LoginPage() {
           {/* Quick Demo Login Switcher */}
           <div className="pt-gutter-md border-t border-light-outline-variant dark:border-dark-outline-variant flex flex-col gap-gutter-xs text-center">
             <span className="font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
-              Akun Uji Coba Cepat (Demo):
+              Pilihan Akun Cepat:
             </span>
             <div className="flex flex-wrap items-center justify-center gap-gutter-xs">
-              {['operator.keuangan', 'kepala.uptd', 'auditor.daerah'].map((role) => (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => setUsername(role)}
-                  className="px-gutter-sm py-1 rounded bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant font-label text-[11px] text-light-on-surface dark:text-dark-on-surface hover:border-indigo transition-colors"
-                >
-                  {role}
-                </button>
-              ))}
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('081280433030');
+                  setPassword('Cilegon321!');
+                  setErrorMessage(null);
+                }}
+                className="px-gutter-sm py-1 rounded bg-amber/15 border border-amber/40 font-label text-[11px] font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber/25 transition-colors"
+              >
+                ⭐ Admin (081280433030)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('operator.keuangan');
+                  setPassword('password123');
+                  setErrorMessage(null);
+                }}
+                className="px-gutter-sm py-1 rounded bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant font-label text-[11px] text-light-on-surface dark:text-dark-on-surface hover:border-indigo transition-colors"
+              >
+                operator.keuangan
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setUsername('kepala.uptd');
+                  setPassword('password123');
+                  setErrorMessage(null);
+                }}
+                className="px-gutter-sm py-1 rounded bg-light-surface-container-low dark:bg-dark-surface-container border border-light-outline-variant dark:border-dark-outline-variant font-label text-[11px] text-light-on-surface dark:text-dark-on-surface hover:border-indigo transition-colors"
+              >
+                kepala.uptd
+              </button>
             </div>
           </div>
 

@@ -14,6 +14,7 @@ interface HeaderProps {
   isRealtimeConnected?: boolean;
   isLoggedIn?: boolean;
   username?: string;
+  role?: string;
   onLogout?: () => void;
 }
 
@@ -31,6 +32,7 @@ export default function Header({
   isRealtimeConnected = false,
   isLoggedIn = false,
   username,
+  role,
   onLogout,
 }: HeaderProps) {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
@@ -225,11 +227,11 @@ export default function Header({
           {isLoggedIn ? (
             <div className="hidden md:flex items-center gap-2 pl-2 border-l border-light-outline-variant dark:border-dark-outline-variant">
               <div className="hidden lg:flex flex-col text-right">
-                <span className="font-label text-label-xs text-light-on-surface dark:text-dark-on-surface font-semibold truncate max-w-[100px]">
+                <span className="font-label text-label-xs text-light-on-surface dark:text-dark-on-surface font-semibold truncate max-w-[140px]" title={username}>
                   {username || 'Operator'}
                 </span>
-                <span className="text-[10px] text-light-on-surface-variant dark:text-dark-on-surface-variant leading-none">
-                  Petugas
+                <span className={`text-[10px] font-semibold uppercase tracking-wider leading-none ${role === 'admin' ? 'text-amber font-bold' : 'text-light-on-surface-variant dark:text-dark-on-surface-variant'}`}>
+                  {role === 'admin' ? 'ADMIN' : 'PETUGAS'}
                 </span>
               </div>
               <button

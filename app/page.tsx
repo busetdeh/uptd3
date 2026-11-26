@@ -215,7 +215,8 @@ export default function DashboardPage() {
         isAutosyncing={isLoading}
         isRealtimeConnected={isRealtimeConnected}
         isLoggedIn={Boolean(authUser)}
-        username={authUser?.username}
+        username={authUser?.displayName || authUser?.username}
+        role={authUser?.role}
         onLogout={handleLogout}
       />
 

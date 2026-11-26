@@ -3,8 +3,44 @@ import { NextRequest } from 'next/server';
 export interface AuthUser {
   username: string;
   role: string;
+  displayName?: string;
   loginAt: string;
 }
+
+export interface UserCredential {
+  username: string;
+  password: string;
+  role: 'admin' | 'operator' | 'kepala' | 'auditor';
+  displayName: string;
+}
+
+// Daftar pengguna terdaftar resmi
+export const REGISTERED_USERS: UserCredential[] = [
+  {
+    username: '081280433030',
+    password: 'Cilegon321!',
+    role: 'admin',
+    displayName: 'Administrator (081280433030)',
+  },
+  {
+    username: 'operator.keuangan',
+    password: 'password123',
+    role: 'operator',
+    displayName: 'Operator Keuangan',
+  },
+  {
+    username: 'kepala.uptd',
+    password: 'password123',
+    role: 'kepala',
+    displayName: 'Kepala UPTD',
+  },
+  {
+    username: 'auditor.daerah',
+    password: 'password123',
+    role: 'auditor',
+    displayName: 'Auditor Daerah',
+  },
+];
 
 const AUTH_STORAGE_KEY = 'sip_auth_user';
 const AUTH_COOKIE_NAME = 'sip_user';
@@ -26,10 +62,11 @@ export function getClientAuth(): AuthUser | null {
   }
 }
 
-export function setClientAuth(username: string, role = 'operator'): AuthUser {
+export function setClientAuth(username: string, role = 'operator', displayName?: string): AuthUser {
   const user: AuthUser = {
     username,
     role,
+    displayName: displayName || (role === 'admin' ? 'Administrator' : username),
     loginAt: new Date().toISOString(),
   };
 
