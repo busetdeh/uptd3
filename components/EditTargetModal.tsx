@@ -68,14 +68,33 @@ export default function EditTargetModal({
     }
   };
 
+  // Handle ESC key to close modal
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const setPreset = (total: number, harian: number) => {
     setTotalTarget(total);
     setTargetHarian(harian);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-gutter-sm sm:p-gutter-md bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-md rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low text-light-on-surface dark:text-dark-on-surface border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-100">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-gutter-sm sm:p-gutter-md bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150 cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low text-light-on-surface dark:text-dark-on-surface border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-100 cursor-default"
+      >
         
         {/* Modal Header */}
         <header className="flex items-start justify-between gap-gutter-md p-gutter-md sm:p-gutter-lg border-b border-light-outline-variant dark:border-dark-outline-variant">

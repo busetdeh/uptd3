@@ -81,6 +81,19 @@ export default function CSVImportModal({
     }
   };
 
+  // Handle ESC key to close modal
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   const downloadSampleTemplate = () => {
     const csvContent =
       'NO,WAJIB PAJAK,KELURAHAN,NOP,TANGGAL BAYAR,JUMLAH PEMBAYARAN,KETERANGAN,BERITA ACARA\n' +
@@ -104,9 +117,14 @@ export default function CSVImportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-gutter-sm sm:p-gutter-md bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150">
-      
-      <div className="w-full max-w-3xl rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low text-light-on-surface dark:text-dark-on-surface border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-gutter-sm sm:p-gutter-md bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150 cursor-pointer"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-3xl rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low text-light-on-surface dark:text-dark-on-surface border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl flex flex-col max-h-[90vh] overflow-hidden cursor-default animate-in zoom-in-95 duration-100"
+      >
         
         {/* Modal Header */}
         <header className="flex items-start justify-between gap-gutter-md p-gutter-md sm:p-gutter-lg border-b border-light-outline-variant dark:border-dark-outline-variant">

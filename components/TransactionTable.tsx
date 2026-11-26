@@ -470,8 +470,14 @@ export default function TransactionTable({
 
       {/* Confirmation Modal for Bulk Delete & Clear All */}
       {confirmModal && confirmModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-gutter-sm sm:p-gutter-md bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="w-full max-w-sm rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low text-light-on-surface dark:text-dark-on-surface border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl p-gutter-md sm:p-gutter-lg flex flex-col gap-gutter-md animate-in zoom-in-95 duration-100">
+        <div
+          onClick={() => setConfirmModal(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-gutter-sm sm:p-gutter-md bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-150 cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm rounded-md bg-light-surface-container-lowest dark:bg-dark-surface-container-low text-light-on-surface dark:text-dark-on-surface border border-light-outline-variant dark:border-dark-outline-variant shadow-2xl p-gutter-md sm:p-gutter-lg flex flex-col gap-gutter-md animate-in zoom-in-95 duration-100 cursor-default"
+          >
             <div className="flex items-center gap-gutter-sm text-crimson">
               <span className="material-symbols-outlined text-headline-md">warning</span>
               <h3 className="font-headline text-headline-sm">
