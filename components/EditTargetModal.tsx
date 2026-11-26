@@ -108,13 +108,20 @@ export default function EditTargetModal({
             <span className="font-label text-label-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
               Pilihan Cepat Pagu Target:
             </span>
-            <div className="grid grid-cols-2 gap-gutter-xs">
+            <div className="grid grid-cols-3 gap-gutter-xs">
               <button
                 type="button"
-                onClick={() => setPreset(1000000000, 35000000)}
+                onClick={() => setPreset(800000000, 26666667)}
                 className="px-gutter-sm py-1.5 rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm hover:border-indigo transition-colors text-left"
               >
-                1 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 35 Jt</span>
+                800 Juta <span className="text-[10px] text-light-on-surface-variant block">Harian: 26.6 Jt</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreset(1000000000, 33333333)}
+                className="px-gutter-sm py-1.5 rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm hover:border-indigo transition-colors text-left"
+              >
+                1 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 33.3 Jt</span>
               </button>
               <button
                 type="button"
@@ -125,17 +132,24 @@ export default function EditTargetModal({
               </button>
               <button
                 type="button"
-                onClick={() => setPreset(2000000000, 65000000)}
+                onClick={() => setPreset(2000000000, 66666667)}
                 className="px-gutter-sm py-1.5 rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm hover:border-indigo transition-colors text-left"
               >
-                2 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 65 Jt</span>
+                2 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 66.6 Jt</span>
               </button>
               <button
                 type="button"
-                onClick={() => setPreset(2500000000, 80000000)}
+                onClick={() => setPreset(2500000000, 83333333)}
                 className="px-gutter-sm py-1.5 rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm hover:border-indigo transition-colors text-left"
               >
-                2.5 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 80 Jt</span>
+                2.5 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 83.3 Jt</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreset(3000000000, 100000000)}
+                className="px-gutter-sm py-1.5 rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-label-sm hover:border-indigo transition-colors text-left"
+              >
+                3 Miliar <span className="text-[10px] text-light-on-surface-variant block">Harian: 100 Jt</span>
               </button>
             </div>
           </div>
@@ -152,8 +166,8 @@ export default function EditTargetModal({
               <input
                 id="total-target-input"
                 type="number"
-                min="1000000"
-                step="5000000"
+                min="0"
+                step="any"
                 required
                 value={totalTarget}
                 onChange={(e) => setTotalTarget(Number(e.target.value))}
@@ -177,8 +191,8 @@ export default function EditTargetModal({
               <input
                 id="daily-target-input"
                 type="number"
-                min="100000"
-                step="1000000"
+                min="0"
+                step="any"
                 required
                 value={targetHarian}
                 onChange={(e) => setTargetHarian(Number(e.target.value))}
