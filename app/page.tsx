@@ -1,15 +1,32 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import KPICards from '@/components/KPICards';
-import TrendChart from '@/components/TrendChart';
-import CategoryDonut from '@/components/CategoryDonut';
 import TransactionTable from '@/components/TransactionTable';
 import CSVImportModal from '@/components/CSVImportModal';
 import EditTargetModal from '@/components/EditTargetModal';
 import { FilterState, Transaction, TargetBudget } from '@/lib/types';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+
+const TrendChart = dynamic(() => import('@/components/TrendChart'), {
+  ssr: false,
+  loading: () => (
+    <div className="lg:col-span-8 h-72 bg-light-surface-container-lowest dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded-md animate-pulse flex items-center justify-center text-body-sm text-light-on-surface-variant">
+      Memuat grafik tren...
+    </div>
+  ),
+});
+
+const CategoryDonut = dynamic(() => import('@/components/CategoryDonut'), {
+  ssr: false,
+  loading: () => (
+    <div className="lg:col-span-4 h-72 bg-light-surface-container-lowest dark:bg-dark-surface-container-low border border-light-outline-variant dark:border-dark-outline-variant rounded-md animate-pulse flex items-center justify-center text-body-sm text-light-on-surface-variant">
+      Memuat proporsi kategori...
+    </div>
+  ),
+});
 
 interface SummaryData {
   totalRealisasi: number;
