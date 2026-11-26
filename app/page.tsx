@@ -167,15 +167,17 @@ export default function DashboardPage() {
       return;
     }
 
-    const headers = ['Tanggal', 'Kode Rekening', 'Nama Kategori', 'Uraian Transaksi', 'Nominal', 'Nomor Bukti', 'Status'];
+    const headers = ['Tanggal', 'Kode Rekening', 'Nama Kategori', 'Kelurahan', 'Uraian Transaksi', 'Nominal', 'Nomor Bukti', 'Status', 'Berita Acara'];
     const rows = transactions.map((t) => [
       t.tanggal,
       t.kode_rekening,
       `"${t.nama_kategori}"`,
+      `"${t.kelurahan || ''}"`,
       `"${(t.uraian_transaksi || '').replace(/"/g, '""')}"`,
       t.nominal,
       t.nomor_bukti,
       t.status,
+      `"${t.berita_acara || ''}"`,
     ]);
 
     const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');

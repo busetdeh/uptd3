@@ -79,9 +79,16 @@ export async function saveTransactions(transactions: Transaction[]): Promise<boo
 
       if (error) {
         console.warn('Supabase save error:', error.message);
-        // Fallback: jika kolom kelurahan belum dibuat di tabel Supabase, simpan tanpa field kelurahan
-        if (error.message.includes('kelurahan') || (error as { code?: string }).code === 'PGRST204') {
-          const sanitized = dedupedTransactions.map(({ kelurahan, ...rest }) => rest);
+        // Fallback: jika kolom kelurahan atau berita_acara belum dibuat di tabel Supabase, simpan tanpa field tersebut
+        if (
+          error.message.includes('kelurahan') ||
+          error.message.includes('berita_acara') ||
+          error.message.includes('wajib_pajak') ||
+          (error as { code?: string }).code === 'PGRST204'
+        ) {
+          const sanitized = dedupedTransactions.map(
+            ({ kelurahan, berita_acara, wajib_pajak, ...rest }) => rest
+          );
           const { error: retryError } = await supabase
             .from('transactions')
             .upsert(sanitized, { onConflict: 'nomor_bukti' });

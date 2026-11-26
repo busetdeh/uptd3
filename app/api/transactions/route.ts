@@ -172,3 +172,73 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    if (!isRequestAuthenticated(request)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akses ditolak: Anda harus login untuk memperbarui data transaksi.',
+        },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const { id, berita_acara } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'ID transaksi wajib disertakan.' },
+        { status: 400 }
+      );
+    }
+
+    const all = await getTransactions();
+    const targetIdx = all.findIndex((t) => t.id === id);
+    if (targetIdx === -1) {
+      return NextResponse.json(
+        { success: false, message: 'Transaksi tidak ditemukan.' },
+        { status: 404 }
+      );
+    }
+
+    const newBA = berita_acara !== undefined && berita_acara !== null
+      ? String(berita_acara).trim()
+      : undefined;
+
+    all[targetIdx].berita_acara = newBA;
+
+    // Update in Supabase
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase
+          .from('transactions')
+          .update({ berita_acara: newBA || null })
+          .eq('id', id);
+
+        if (error) {
+          console.warn('Supabase patch berita_acara error:', error.message);
+        }
+      } catch (err) {
+        console.warn('Supabase patch exception:', err);
+      }
+    }
+
+    // Update in local file
+    saveLocalTransactions(all);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Berita Acara berhasil diperbarui',
+      data: all[targetIdx],
+    });
+  } catch (error) {
+    console.error('Patch Transaction Error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Terjadi kesalahan sistem saat memperbarui transaksi' },
+      { status: 500 }
+    );
+  }
+}

@@ -142,6 +142,14 @@ export function validateAndParseCSV(csvText: string): CSVValidationResult {
     const kelurahan = (row.kelurahan as string)?.trim() || (row.desa as string)?.trim() || undefined;
     const keterangan = (row.keterangan as string)?.trim();
     const nop = (row.nop as string)?.trim();
+    const beritaAcara =
+      (row.berita_acara as string)?.trim() ||
+      (row.no_berita_acara as string)?.trim() ||
+      (row.nomor_berita_acara as string)?.trim() ||
+      (row.ba as string)?.trim() ||
+      (row.no_ba as string)?.trim() ||
+      (row.bap as string)?.trim() ||
+      undefined;
 
     let uraian = (row.uraian_transaksi as string)?.trim() || '';
     if (!uraian) {
@@ -197,10 +205,12 @@ export function validateAndParseCSV(csvText: string): CSVValidationResult {
       kode_rekening: kodeRekening,
       nama_kategori: kategori,
       kelurahan,
+      wajib_pajak: wajibPajak,
       uraian_transaksi: uraian,
       nominal,
       nomor_bukti: nomorBukti,
       status: 'Terverifikasi',
+      berita_acara: beritaAcara,
     });
   });
 

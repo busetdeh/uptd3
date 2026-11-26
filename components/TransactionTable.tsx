@@ -3,6 +3,7 @@
 import React from 'react';
 import { Transaction } from '@/lib/types';
 import { formatRupiah } from './KPICards';
+import TransactionDetailModal from './TransactionDetailModal';
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -22,11 +23,39 @@ export default function TransactionTable({
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null);
   const [confirmModal, setConfirmModal] = React.useState<{
     isOpen: boolean;
     mode: 'selected' | 'all';
     count: number;
   } | null>(null);
+
+  const handleUpdateBeritaAcara = async (id: string, newBA: string): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/transactions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, berita_acara: newBA }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (selectedTransaction && selectedTransaction.id === id) {
+          setSelectedTransaction({ ...selectedTransaction, berita_acara: newBA });
+        }
+        if (onDataChanged) {
+          onDataChanged();
+        }
+        return true;
+      } else {
+        alert(data.message || 'Gagal memperbarui Berita Acara');
+        return false;
+      }
+    } catch (err) {
+      console.error('Update BA error:', err);
+      alert('Terjadi kesalahan jaringan.');
+      return false;
+    }
+  };
 
   const pageSize = 5;
   const totalPages = Math.ceil(transactions.length / pageSize) || 1;
@@ -256,12 +285,17 @@ export default function TransactionTable({
                   return (
                     <tr
                       key={tx.id}
-                      className={`hover:bg-light-surface-container-low dark:hover:bg-dark-surface-container transition-colors ${
+                      onClick={() => setSelectedTransaction(tx)}
+                      className={`cursor-pointer hover:bg-light-surface-container-low dark:hover:bg-dark-surface-container transition-colors group ${
                         isChecked ? 'bg-light-surface-container/60 dark:bg-dark-surface-container/60' : ''
                       }`}
+                      title="Klik untuk melihat detail & berita acara"
                     >
                       {isLoggedIn && (
-                        <td className="w-10 px-gutter-md py-gutter-md">
+                        <td
+                          className="w-10 px-gutter-md py-gutter-md"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <input
                             type="checkbox"
                             checked={isChecked}
@@ -281,25 +315,40 @@ export default function TransactionTable({
                         {tx.nama_kategori}
                       </td>
                       <td className="px-gutter-md py-gutter-md font-body text-body-md max-w-xs">
-                        <div className="truncate font-medium" title={tx.uraian_transaksi}>{tx.uraian_transaksi}</div>
-                        {tx.kelurahan && (
-                          <div className="inline-flex items-center gap-1 mt-0.5 text-xs text-light-on-surface-variant/80 dark:text-dark-on-surface-variant/80 font-mono">
-                            <span className="w-1.5 h-1.5 rounded-full bg-indigo inline-block" aria-hidden="true"></span>
-                            <span>Kel. {tx.kelurahan}</span>
-                          </div>
-                        )}
+                        <div className="truncate font-medium group-hover:text-indigo dark:group-hover:text-indigo-400 transition-colors" title={tx.uraian_transaksi}>
+                          {tx.uraian_transaksi}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1 mt-0.5">
+                          {tx.kelurahan && (
+                            <div className="inline-flex items-center gap-1 text-xs text-light-on-surface-variant/80 dark:text-dark-on-surface-variant/80 font-mono">
+                              <span className="w-1.5 h-1.5 rounded-full bg-indigo inline-block" aria-hidden="true"></span>
+                              <span>Kel. {tx.kelurahan}</span>
+                            </div>
+                          )}
+                          {tx.berita_acara && (
+                            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-indigo/10 text-indigo dark:text-indigo-400 font-mono text-[10px]">
+                              <span className="material-symbols-outlined text-[10px]" aria-hidden="true">assignment</span>
+                              <span>BA: {tx.berita_acara}</span>
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-gutter-md py-gutter-md text-right tabular-nums whitespace-nowrap font-label text-label-lg">
                         {formatRupiah(tx.nominal)}
                       </td>
                       <td className="px-gutter-md py-gutter-md whitespace-nowrap">
-                        <span className={`inline-flex items-center px-gutter-sm py-gutter-xs rounded-full font-label text-label-sm ${
-                          tx.status === 'Terverifikasi'
-                            ? 'bg-light-secondary-container text-light-on-secondary-container dark:bg-dark-secondary-container dark:text-dark-on-secondary-container'
-                            : 'bg-light-warning-container text-light-on-warning-container dark:bg-dark-warning-container dark:text-dark-on-warning-container'
-                        }`}>
-                          {tx.status}
-                        </span>
+                        <div className="flex items-center justify-between gap-1.5">
+                          <span className={`inline-flex items-center px-gutter-sm py-gutter-xs rounded-full font-label text-label-sm ${
+                            tx.status === 'Terverifikasi'
+                              ? 'bg-light-secondary-container text-light-on-secondary-container dark:bg-dark-secondary-container dark:text-dark-on-secondary-container'
+                              : 'bg-light-warning-container text-light-on-warning-container dark:bg-dark-warning-container dark:text-dark-on-warning-container'
+                          }`}>
+                            {tx.status}
+                          </span>
+                          <span className="material-symbols-outlined text-sm text-light-outline dark:text-dark-outline group-hover:text-indigo transition-colors" title="Buka Detail">
+                            chevron_right
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -321,20 +370,23 @@ export default function TransactionTable({
               return (
                 <li
                   key={tx.id}
-                  className={`p-gutter-md flex flex-col gap-gutter-xs transition-colors ${
+                  onClick={() => setSelectedTransaction(tx)}
+                  className={`cursor-pointer p-gutter-md flex flex-col gap-gutter-xs transition-colors hover:bg-light-surface-container-low dark:hover:bg-dark-surface-container active:scale-[0.99] ${
                     isChecked ? 'bg-light-surface-container/60 dark:bg-dark-surface-container/60' : ''
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
                       {isLoggedIn && (
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => handleToggleRow(tx.id)}
-                          aria-label={`Pilih transaksi ${tx.nomor_bukti}`}
-                          className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo flex-shrink-0"
-                        />
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => handleToggleRow(tx.id)}
+                            aria-label={`Pilih transaksi ${tx.nomor_bukti}`}
+                            className="w-4 h-4 rounded text-indigo focus:ring-indigo border-light-outline-variant dark:border-dark-outline-variant cursor-pointer accent-indigo flex-shrink-0"
+                          />
+                        </div>
                       )}
                       <div className="flex flex-col min-w-0">
                         <span className="font-mono text-mono-xs sm:text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant truncate max-w-[180px]" title={tx.nomor_bukti}>
@@ -366,6 +418,11 @@ export default function TransactionTable({
                       {tx.kelurahan && (
                         <span className="px-1.5 py-0.2 rounded bg-light-surface-container dark:bg-dark-surface-container font-mono text-[10px] text-light-on-surface-variant flex-shrink-0">
                           {tx.kelurahan}
+                        </span>
+                      )}
+                      {tx.berita_acara && (
+                        <span className="px-1.5 py-0.2 rounded bg-indigo/10 font-mono text-[10px] text-indigo dark:text-indigo-400 flex-shrink-0">
+                          BA
                         </span>
                       )}
                     </div>
@@ -458,6 +515,15 @@ export default function TransactionTable({
           </div>
         </div>
       )}
+
+      {/* Transaction Detail & Berita Acara Popup Modal */}
+      <TransactionDetailModal
+        isOpen={Boolean(selectedTransaction)}
+        transaction={selectedTransaction}
+        onClose={() => setSelectedTransaction(null)}
+        onUpdateBeritaAcara={handleUpdateBeritaAcara}
+        isLoggedIn={isLoggedIn}
+      />
     </section>
   );
 }

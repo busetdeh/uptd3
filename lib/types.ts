@@ -4,10 +4,12 @@ export interface Transaction {
   kode_rekening: string;
   nama_kategori: string;
   kelurahan?: string;
+  wajib_pajak?: string;
   uraian_transaksi: string;
   nominal: number;
   nomor_bukti: string;
   status: 'Terverifikasi' | 'Menunggu Rekonsiliasi' | 'Dibatalkan';
+  berita_acara?: string;
   created_at: string;
 }
 
@@ -51,6 +53,12 @@ export interface CSVParseRow {
   jumlah_pembayaran?: string | number;
   jumlah?: string | number;
   keterangan?: string;
+  berita_acara?: string;
+  no_berita_acara?: string;
+  nomor_berita_acara?: string;
+  ba?: string;
+  no_ba?: string;
+  bap?: string;
   [key: string]: unknown;
 }
 
