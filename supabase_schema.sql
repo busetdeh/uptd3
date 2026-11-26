@@ -76,6 +76,10 @@ DROP POLICY IF EXISTS "Izinkan update transaksi" ON public.transactions;
 CREATE POLICY "Izinkan update transaksi" ON public.transactions
     FOR UPDATE TO anon, authenticated USING (true);
 
+DROP POLICY IF EXISTS "Izinkan delete transaksi" ON public.transactions;
+CREATE POLICY "Izinkan delete transaksi" ON public.transactions
+    FOR DELETE TO anon, authenticated USING (true);
+
 DROP POLICY IF EXISTS "Izinkan baca publik target" ON public.targets;
 CREATE POLICY "Izinkan baca publik target" ON public.targets
     FOR SELECT TO anon, authenticated USING (true);

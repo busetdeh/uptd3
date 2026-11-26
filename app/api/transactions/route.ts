@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTransactions, getTargetBudget, filterTransactions, calculateSummary, saveTransactions } from '@/lib/data';
+import { getTransactions, getTargetBudget, filterTransactions, calculateSummary, saveTransactions, saveLocalTransactions } from '@/lib/data';
 import { FilterState, Transaction, TimeFilterMode } from '@/lib/types';
+import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   try {
@@ -101,6 +102,28 @@ export async function POST(request: NextRequest) {
     console.error('Save Transaction Error:', error);
     return NextResponse.json(
       { success: false, message: 'Gagal menyimpan transaksi' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE() {
+  try {
+    if (isSupabaseConfigured()) {
+      const { error } = await supabase.from('transactions').delete().neq('id', 'placeholder');
+      if (error) {
+        console.warn('Supabase delete error (mungkin butuh policy DELETE):', error.message);
+      }
+    }
+    saveLocalTransactions([]);
+    return NextResponse.json({
+      success: true,
+      message: 'Seluruh data transaksi berhasil dikosongkan',
+    });
+  } catch (error) {
+    console.error('Delete Transaction Error:', error);
+    return NextResponse.json(
+      { success: false, message: 'Gagal mengosongkan transaksi' },
       { status: 500 }
     );
   }
