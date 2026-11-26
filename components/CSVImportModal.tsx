@@ -83,19 +83,15 @@ export default function CSVImportModal({
 
   const downloadSampleTemplate = () => {
     const csvContent =
-      'tanggal,kode_rekening,nama_kategori,uraian_transaksi,nominal,nomor_bukti\n' +
-      '2026-11-02,4.1.2.01.01,Retribusi Pasar,Setoran Harian Kios Pasar Induk Blok A,18500000,STS-202611-0101\n' +
-      '2026-11-03,4.1.2.02.01,Retribusi Parkir,Parkir Tepi Jalan Umum Sektor Utara,12300000,STS-202611-0102\n' +
-      '2026-11-04,4.1.2.01.02,Retribusi Kebersihan,Iuran Persampahan Wilayah Niaga Sentral,9400000,STS-202611-0103\n' +
-      '2026-11-05,4.1.2.03.01,Pemanfaatan Aset Daerah,Sewa Gedung Pertemuan Graha Praja,15000000,STS-202611-0104\n' +
-      '2026-11-06,4.1.2.02.02,Retribusi Terminal,Retribusi Layanan Peron Terminal Tipe B,8750000,STS-202611-0105\n' +
-      '2026-11-08,4.1.2.01.01,Retribusi Pasar,Setoran Los Basah Pasar Baru Selatan,21400000,STS-202611-0106\n' +
-      '2026-11-09,4.1.2.02.01,Retribusi Parkir,Setoran Harian Parkir Kawasan Kuliner,16800000,STS-202611-0107\n' +
-      '2026-11-10,4.1.2.01.02,Retribusi Kebersihan,Retribusi Sampah Kawasan Industri Kecil,14200000,STS-202611-0108\n' +
-      '2026-11-15,4.1.2.01.01,Retribusi Pasar,Sewa Kios Semi Permanen Blok C,28400000,STS-202611-0112\n' +
-      '2026-11-20,4.1.2.01.01,Retribusi Pasar,Retribusi Los Buah & Sayur Segar,17800000,STS-202611-0117\n' +
-      '2026-11-25,4.1.2.02.01,Retribusi Parkir,Rekap Parkir Tepi Jalan Umum Zona Pusat,14250000,STS-202611-0123\n' +
-      '2026-11-26,4.1.2.03.01,Pemanfaatan Aset Daerah,Sewa Fasilitas Aula & Stand Pameran,32000000,STS-202611-0125\n';
+      'NO,WAJIB PAJAK,KELURAHAN,NOP,TANGGAL BAYAR,JUMLAH PEMBAYARAN,KETERANGAN\n' +
+      '1,H SUADAH B H SAI,MEKARSARI,36.72.020.011.003.0302.0,16-11-2026,256868,2020-2026\n' +
+      '2,H MUCLIS,LEBAKGEDE,36.72.020.013.004.0004.0,16-11-2026,280195,2025\n' +
+      '3,SAMTANI,MEKARSARI,36.72.020.011.004.0038.0,16-11-2026,214656,2024-2026\n' +
+      '4,SANAWIRI,MEKARSARI,36.72.020.011.004.0083.0,16-11-2026,352560,2024-2026\n' +
+      '5,RUSDI B TIMAN,LEBAKGEDE,36.72.020.013.005.0008.0,16-11-2026,454720,1995-1999\n' +
+      '6,H NAWAWI,LEBAKGEDE,36.72.020.013.005.0008.0,16-11-2026,2391540,"2007,2009,2011"\n' +
+      '7,H MUCHLIS,LEBAKGEDE,36.72.020.013.005.0008.0,16-11-2026,8124581,2025-2026\n' +
+      '8,ANIMAH,LEBAKGEDE,36.72.020.013.007.0243.0,16-11-2026,169600,2025\n';
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);

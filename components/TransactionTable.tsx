@@ -79,7 +79,15 @@ export default function TransactionTable({
                     <td className="px-gutter-lg py-gutter-md tabular-nums whitespace-nowrap font-body text-body-md">{tx.tanggal}</td>
                     <td className="px-gutter-lg py-gutter-md whitespace-nowrap font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant max-w-[150px] truncate" title={tx.nomor_bukti}>{tx.nomor_bukti}</td>
                     <td className="px-gutter-lg py-gutter-md whitespace-nowrap font-body text-body-md max-w-[140px] truncate" title={tx.nama_kategori}>{tx.nama_kategori}</td>
-                    <td className="px-gutter-lg py-gutter-md font-body text-body-md max-w-xs truncate" title={tx.uraian_transaksi}>{tx.uraian_transaksi}</td>
+                    <td className="px-gutter-lg py-gutter-md font-body text-body-md max-w-xs">
+                      <div className="truncate font-medium" title={tx.uraian_transaksi}>{tx.uraian_transaksi}</div>
+                      {tx.kelurahan && (
+                        <div className="inline-flex items-center gap-1 mt-0.5 text-xs text-light-on-surface-variant/80 dark:text-dark-on-surface-variant/80 font-mono">
+                          <span className="w-1.5 h-1.5 rounded-full bg-indigo inline-block" aria-hidden="true"></span>
+                          <span>Kel. {tx.kelurahan}</span>
+                        </div>
+                      )}
+                    </td>
                     <td className="px-gutter-lg py-gutter-md text-right tabular-nums whitespace-nowrap font-label text-label-lg">{formatRupiah(tx.nominal)}</td>
                     <td className="px-gutter-lg py-gutter-md whitespace-nowrap">
                       <span className={`inline-flex items-center px-gutter-sm py-gutter-xs rounded-full font-label text-label-sm ${
@@ -127,9 +135,16 @@ export default function TransactionTable({
                   {tx.uraian_transaksi}
                 </p>
                 <div className="flex items-center justify-between gap-2 pt-1 border-t border-light-outline-variant/40 dark:border-dark-outline-variant/40">
-                  <span className="font-body text-body-xs text-light-on-surface-variant dark:text-dark-on-surface-variant truncate max-w-[160px]">
-                    {tx.nama_kategori}
-                  </span>
+                  <div className="flex items-center gap-1.5 truncate max-w-[180px]">
+                    <span className="font-body text-body-xs text-light-on-surface-variant dark:text-dark-on-surface-variant truncate">
+                      {tx.nama_kategori}
+                    </span>
+                    {tx.kelurahan && (
+                      <span className="px-1.5 py-0.2 rounded bg-light-surface-container dark:bg-dark-surface-container font-mono text-[10px] text-light-on-surface-variant flex-shrink-0">
+                        {tx.kelurahan}
+                      </span>
+                    )}
+                  </div>
                   <span className="font-label text-label-md tabular-nums flex-shrink-0 font-semibold text-emerald">
                     {formatRupiah(tx.nominal)}
                   </span>

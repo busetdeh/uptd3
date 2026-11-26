@@ -3,6 +3,7 @@ export interface Transaction {
   tanggal: string; // YYYY-MM-DD
   kode_rekening: string;
   nama_kategori: string;
+  kelurahan?: string;
   uraian_transaksi: string;
   nominal: number;
   nomor_bukti: string;
@@ -42,6 +43,8 @@ export interface CSVParseRow {
   // PBB / Pajak & Retribusi custom fields from user tables
   no?: string | number;
   wajib_pajak?: string;
+  kelurahan?: string;
+  desa?: string;
   nop?: string;
   tanggal_bayar?: string;
   tgl_bayar?: string;

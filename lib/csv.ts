@@ -120,17 +120,23 @@ export function validateAndParseCSV(csvText: string): CSVValidationResult {
 
     // 3. Resolve Wajib Pajak & Uraian
     const wajibPajak = (row.wajib_pajak as string)?.trim();
+    const kelurahan = (row.kelurahan as string)?.trim() || (row.desa as string)?.trim() || undefined;
     const keterangan = (row.keterangan as string)?.trim();
     const nop = (row.nop as string)?.trim();
 
     let uraian = (row.uraian_transaksi as string)?.trim() || '';
     if (!uraian) {
       if (wajibPajak) {
-        uraian = `Pembayaran PBB: ${wajibPajak}${keterangan ? ` (Th: ${keterangan})` : ''}`;
+        const parts = [
+          `Pembayaran PBB: ${wajibPajak}`,
+          kelurahan ? `[Kel. ${kelurahan}]` : '',
+          keterangan ? `(Th: ${keterangan})` : '',
+        ].filter(Boolean);
+        uraian = parts.join(' ');
       } else if (keterangan) {
-        uraian = keterangan;
+        uraian = kelurahan ? `[Kel. ${kelurahan}] ${keterangan}` : keterangan;
       } else {
-        uraian = 'Penerimaan Setoran Pajak Daerah';
+        uraian = kelurahan ? `Penerimaan PBB Kelurahan ${kelurahan}` : 'Penerimaan Setoran Pajak Daerah';
       }
     }
 
@@ -154,6 +160,7 @@ export function validateAndParseCSV(csvText: string): CSVValidationResult {
       tanggal: formattedDate,
       kode_rekening: kodeRekening,
       nama_kategori: kategori,
+      kelurahan,
       uraian_transaksi: uraian,
       nominal,
       nomor_bukti: nomorBukti,

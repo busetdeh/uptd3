@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS public.transactions (
     uraian_transaksi TEXT,
     nominal NUMERIC(15, 2) NOT NULL CHECK (nominal > 0),
     nomor_bukti VARCHAR(100) UNIQUE,
+    kelurahan VARCHAR(100),
     status VARCHAR(50) DEFAULT 'Terverifikasi',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -19,6 +20,7 @@ CREATE TABLE IF NOT EXISTS public.transactions (
 -- Buat Indeks untuk kecepatan filter tanggal & pencarian
 CREATE INDEX IF NOT EXISTS idx_transactions_tanggal ON public.transactions(tanggal);
 CREATE INDEX IF NOT EXISTS idx_transactions_kategori ON public.transactions(nama_kategori);
+CREATE INDEX IF NOT EXISTS idx_transactions_kelurahan ON public.transactions(kelurahan);
 CREATE INDEX IF NOT EXISTS idx_transactions_nomor_bukti ON public.transactions(nomor_bukti);
 
 -- 2. Buat Tabel Target Anggaran
