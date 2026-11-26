@@ -66,16 +66,35 @@ function parseFlexibleNominal(raw: unknown): number | null {
   return !isNaN(num) && num > 0 ? num : null;
 }
 
+function cleanCSVText(raw: string): string {
+  if (!raw) return '';
+  // Hapus UTF-8 BOM jika ada
+  let clean = raw.replace(/^\uFEFF/, '');
+  // Pisahkan per baris dan buang baris kosong atau baris yang hanya berisi koma/titik-koma/spasi di awal file
+  const lines = clean.split(/\r?\n/);
+  while (lines.length > 0) {
+    const firstLine = lines[0].trim();
+    if (/^[,\t;"'\s]*$/.test(firstLine)) {
+      lines.shift();
+    } else {
+      break;
+    }
+  }
+  return lines.join('\n');
+}
+
 export function validateAndParseCSV(csvText: string): CSVValidationResult {
-  const parsed = Papa.parse<CSVParseRow>(csvText, {
+  const cleaned = cleanCSVText(csvText);
+  const parsed = Papa.parse<CSVParseRow>(cleaned, {
     header: true,
-    skipEmptyLines: true,
+    skipEmptyLines: 'greedy',
     transformHeader: (h) =>
       h.trim().toLowerCase().replace(/[\s\.\/_-]+/g, '_'),
   });
 
   const validRows: Omit<Transaction, 'id' | 'created_at'>[] = [];
   const errors: CSVValidationError[] = [];
+  const seenNomorBukti = new Set<string>();
 
   parsed.data.forEach((row, index) => {
     const rowNum = index + 2; // header is row 1
@@ -151,10 +170,27 @@ export function validateAndParseCSV(csvText: string): CSVValidationResult {
       kodeRekening = nop ? '4.1.1.01.01' : '4.1.2.01.01';
     }
 
-    // 5. Resolve Nomor Bukti / NOP
-    const nomorBukti =
-      (row.nomor_bukti as string)?.trim() ||
-      (nop ? `NOP-${nop}` : `STS-${formattedDate.replace(/-/g, '')}-${index + 1}`);
+    // 5. Resolve Nomor Bukti / NOP (Pastikan selalu unik)
+    const explicitNo = row.no !== undefined && row.no !== null && String(row.no).trim() !== ''
+      ? String(row.no).trim()
+      : '';
+
+    let nomorBukti = (row.nomor_bukti as string)?.trim();
+    if (!nomorBukti) {
+      if (nop) {
+        nomorBukti = explicitNo
+          ? `NOP-${nop}#${explicitNo}`
+          : `NOP-${nop}-${index + 1}`;
+      } else {
+        nomorBukti = `STS-${formattedDate.replace(/-/g, '')}-${index + 1}`;
+      }
+    }
+
+    // Jika nomorBukti yang dihasilkan sudah pernah muncul di file yang sama, tambahkan suffix pembeda
+    if (seenNomorBukti.has(nomorBukti)) {
+      nomorBukti = `${nomorBukti}-${index + 1}`;
+    }
+    seenNomorBukti.add(nomorBukti);
 
     validRows.push({
       tanggal: formattedDate,

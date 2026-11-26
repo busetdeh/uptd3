@@ -41,8 +41,16 @@ export async function getTransactions(): Promise<Transaction[]> {
         .select('*')
         .order('tanggal', { ascending: false });
 
-      if (!error && data) {
+      if (!error && data && data.length > 0) {
         return data as Transaction[];
+      }
+
+      if (!error && data && data.length === 0) {
+        const local = getLocalTransactions();
+        if (local.length > 0) {
+          return local;
+        }
+        return [];
       }
       console.warn('Supabase fetch failed, falling back to local:', error?.message);
     } catch (e) {
@@ -55,17 +63,36 @@ export async function getTransactions(): Promise<Transaction[]> {
 
 // Async Save Transactions (Supabase with Local Fallback)
 export async function saveTransactions(transactions: Transaction[]): Promise<boolean> {
+  // Deduplikasi array berdasarkan nomor_bukti agar tidak memicu error PostgreSQL ON CONFLICT
+  const uniqueMap = new Map<string, Transaction>();
+  transactions.forEach((tx) => {
+    const key = tx.nomor_bukti || tx.id;
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, tx);
+    }
+  });
+  const dedupedTransactions = Array.from(uniqueMap.values());
+
   // Always update local file as backup
-  saveLocalTransactions(transactions);
+  saveLocalTransactions(dedupedTransactions);
 
   if (isSupabaseConfigured()) {
     try {
       const { error } = await supabase
         .from('transactions')
-        .upsert(transactions, { onConflict: 'nomor_bukti' });
+        .upsert(dedupedTransactions, { onConflict: 'nomor_bukti' });
 
       if (error) {
-        console.error('Supabase save error:', error);
+        console.warn('Supabase save error:', error.message);
+        // Fallback: jika kolom kelurahan belum dibuat di tabel Supabase, simpan tanpa field kelurahan
+        if (error.message.includes('kelurahan') || (error as { code?: string }).code === 'PGRST204') {
+          const sanitized = dedupedTransactions.map(({ kelurahan, ...rest }) => rest);
+          const { error: retryError } = await supabase
+            .from('transactions')
+            .upsert(sanitized, { onConflict: 'nomor_bukti' });
+          if (!retryError) return true;
+          console.error('Supabase retry upsert error:', retryError.message);
+        }
         return false;
       }
       return true;
