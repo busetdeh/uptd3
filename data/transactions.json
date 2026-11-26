@@ -1,6 +1,94 @@
 [
   {
-    "id": "tx-001",
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: ASNGAD (Th: 2014,2023,2025,2026)",
+    "nominal": 2139598,
+    "nomor_bukti": "NOP-36.72.020.013.007.0075.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-xqvci",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: SITI MARJATI (Th: 2021,2022,2023,2024)",
+    "nominal": 419840,
+    "nomor_bukti": "NOP-36.72.070.010.029.0300.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-5ntwd",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: ASNGAD (Th: 2026)",
+    "nominal": 336896,
+    "nomor_bukti": "NOP-36.72.020.013.007.0070.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-j4zgj",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: ASNGAD B SANGAD (Th: 2026)",
+    "nominal": 736256,
+    "nomor_bukti": "NOP-36.72.020.013.007.0089.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-3c04o",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: HOLILAH (Th: 2026)",
+    "nominal": 51504,
+    "nomor_bukti": "NOP-36.72.070.008.003.0176.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-6ontn",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: H.SYAMSUL BAHRI, SE (Th: 2022 s.d 2026)",
+    "nominal": 13601280,
+    "nomor_bukti": "NOP-36.72.070.005.011.0579.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-tqt7s",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: SUPARJO BIN KUSNODIHARJO (Th: 1995 s.d 2005)",
+    "nominal": 5236,
+    "nomor_bukti": "NOP-36.72.020.012.002.0146.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-jupsp",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "tanggal": "2026-11-09",
+    "kode_rekening": "4.1.1.01.01",
+    "nama_kategori": "PBB-P2 (Pajak Bumi & Bangunan)",
+    "uraian_transaksi": "Pembayaran PBB: MIN FU (HGB.138/96) (Th: 2025 dan 2026)",
+    "nominal": 5766293,
+    "nomor_bukti": "NOP-36.72.070.005.011.0432.0",
+    "status": "Terverifikasi",
+    "id": "tx-1795657406363-w9gqd",
+    "created_at": "2026-11-26T01:43:26.363Z"
+  },
+  {
+    "id": "f6931d54-fac8-4619-9e37-60ba1e9e19eb",
     "tanggal": "2026-11-25",
     "kode_rekening": "4.1.2.01.01",
     "nama_kategori": "Retribusi Pasar",
@@ -8,10 +96,10 @@
     "nominal": 24500000,
     "nomor_bukti": "STS-2026-1145",
     "status": "Terverifikasi",
-    "created_at": "2026-11-25T14:30:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-002",
+    "id": "3c3ea06d-8510-414d-a997-6e01f02c7107",
     "tanggal": "2026-11-25",
     "kode_rekening": "4.1.2.02.01",
     "nama_kategori": "Retribusi Parkir",
@@ -19,10 +107,10 @@
     "nominal": 14250000,
     "nomor_bukti": "STS-2026-1144",
     "status": "Terverifikasi",
-    "created_at": "2026-11-25T12:15:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-003",
+    "id": "53f69573-905f-4c25-aa0a-c9423b85ba13",
     "tanggal": "2026-11-24",
     "kode_rekening": "4.1.2.01.02",
     "nama_kategori": "Retribusi Kebersihan",
@@ -30,10 +118,10 @@
     "nominal": 11800000,
     "nomor_bukti": "STS-2026-1143",
     "status": "Menunggu Rekonsiliasi",
-    "created_at": "2026-11-24T16:00:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-004",
+    "id": "7e0735a1-4c81-4928-a988-8b392418a04d",
     "tanggal": "2026-11-24",
     "kode_rekening": "4.1.2.01.01",
     "nama_kategori": "Retribusi Pasar",
@@ -41,10 +129,10 @@
     "nominal": 18900000,
     "nomor_bukti": "STS-2026-1142",
     "status": "Terverifikasi",
-    "created_at": "2026-11-24T11:45:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-005",
+    "id": "5d65ebe0-3475-40b0-8f48-938e3c9aed52",
     "tanggal": "2026-11-23",
     "kode_rekening": "4.1.2.02.01",
     "nama_kategori": "Retribusi Parkir",
@@ -52,10 +140,10 @@
     "nominal": 16400000,
     "nomor_bukti": "STS-2026-1141",
     "status": "Terverifikasi",
-    "created_at": "2026-11-23T15:20:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-006",
+    "id": "ae4136ae-bc60-4b22-b159-074895517371",
     "tanggal": "2026-11-21",
     "kode_rekening": "4.1.2.01.01",
     "nama_kategori": "Retribusi Pasar",
@@ -63,10 +151,10 @@
     "nominal": 22100000,
     "nomor_bukti": "STS-2026-1140",
     "status": "Terverifikasi",
-    "created_at": "2026-11-21T10:00:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-007",
+    "id": "c8a55542-9219-4691-9230-09a2cc7d934e",
     "tanggal": "2026-11-19",
     "kode_rekening": "4.1.2.02.01",
     "nama_kategori": "Retribusi Parkir",
@@ -74,10 +162,10 @@
     "nominal": 19500000,
     "nomor_bukti": "STS-2026-1139",
     "status": "Terverifikasi",
-    "created_at": "2026-11-19T14:10:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-008",
+    "id": "35c82c2f-6906-4d7a-83d0-16c1b0586f53",
     "tanggal": "2026-11-17",
     "kode_rekening": "4.1.2.01.02",
     "nama_kategori": "Retribusi Kebersihan",
@@ -85,10 +173,10 @@
     "nominal": 15300000,
     "nomor_bukti": "STS-2026-1138",
     "status": "Terverifikasi",
-    "created_at": "2026-11-17T09:30:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-009",
+    "id": "12d3ce3d-0b68-4bbb-9cd6-1858540b6dac",
     "tanggal": "2026-11-15",
     "kode_rekening": "4.1.2.01.01",
     "nama_kategori": "Retribusi Pasar",
@@ -96,10 +184,10 @@
     "nominal": 28400000,
     "nomor_bukti": "STS-2026-1137",
     "status": "Terverifikasi",
-    "created_at": "2026-11-15T11:00:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   },
   {
-    "id": "tx-010",
+    "id": "c408368e-79b0-47ed-9332-70e408448320",
     "tanggal": "2026-11-13",
     "kode_rekening": "4.1.2.02.01",
     "nama_kategori": "Retribusi Parkir",
@@ -107,6 +195,6 @@
     "nominal": 12700000,
     "nomor_bukti": "STS-2026-1136",
     "status": "Terverifikasi",
-    "created_at": "2026-11-13T16:30:00Z"
+    "created_at": "2026-11-26T01:30:33.71249+00:00"
   }
 ]

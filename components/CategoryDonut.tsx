@@ -36,13 +36,13 @@ export default function CategoryDonut({ categories }: CategoryDonutProps) {
 
       {/* Donut Chart */}
       <div className="flex items-center justify-center py-gutter-xs sm:py-gutter-sm">
-        <div className="relative w-40 h-40 sm:w-44 sm:h-44 flex items-center justify-center">
+        <div className="relative w-40 h-40 sm:w-44 sm:h-44 flex items-center justify-center flex-shrink-0">
           {categories.length === 0 ? (
             <div className="text-light-on-surface-variant text-body-sm">Belum ada data</div>
           ) : (
             <>
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <PieChart width={160} height={160}>
                   <Tooltip
                     formatter={(val) => [formatRupiah(Number(val)), 'Total']}
                     contentStyle={{
@@ -82,14 +82,14 @@ export default function CategoryDonut({ categories }: CategoryDonutProps) {
       </div>
 
       {/* Category Breakdown List */}
-      <ul className="flex flex-col gap-gutter-sm pt-gutter-xs sm:pt-gutter-sm border-t border-light-outline-variant dark:border-dark-outline-variant">
+      <ul className="flex flex-col gap-gutter-sm pt-gutter-xs sm:pt-gutter-sm border-t border-light-outline-variant dark:border-dark-outline-variant max-h-44 overflow-y-auto pr-1">
         {categories.map((cat, idx) => {
           const color = CATEGORY_COLORS[idx % CATEGORY_COLORS.length];
           return (
-            <li key={cat.name} className="flex items-center justify-between gap-gutter-sm">
-              <div className="flex items-center gap-gutter-sm truncate">
+            <li key={cat.name} className="flex items-center justify-between gap-gutter-sm text-pretty">
+              <div className="flex items-center gap-gutter-sm min-w-0">
                 <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} aria-hidden="true" />
-                <span className="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface truncate">
+                <span className="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface truncate max-w-[130px] sm:max-w-[160px]" title={cat.name}>
                   {cat.name} ({cat.percentage}%)
                 </span>
               </div>

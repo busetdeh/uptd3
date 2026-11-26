@@ -137,7 +137,7 @@ export function validateAndParseCSV(csvText: string): CSVValidationResult {
     // 4. Resolve Kategori & Kode Rekening
     let kategori = (row.nama_kategori as string)?.trim();
     if (!kategori) {
-      kategori = nop ? 'PBB-P2 (Pajak Bumi & Bangunan)' : 'Pajak & Retribusi Daerah';
+      kategori = nop ? 'PBB-P2' : 'Pajak & Retribusi Daerah';
     }
 
     let kodeRekening = (row.kode_rekening as string)?.trim();

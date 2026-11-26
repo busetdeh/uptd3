@@ -77,8 +77,8 @@ export default function TransactionTable({
                 paginatedRows.map((tx) => (
                   <tr key={tx.id} className="hover:bg-light-surface-container-low dark:hover:bg-dark-surface-container transition-colors">
                     <td className="px-gutter-lg py-gutter-md tabular-nums whitespace-nowrap font-body text-body-md">{tx.tanggal}</td>
-                    <td className="px-gutter-lg py-gutter-md whitespace-nowrap font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">{tx.nomor_bukti}</td>
-                    <td className="px-gutter-lg py-gutter-md whitespace-nowrap font-body text-body-md">{tx.nama_kategori}</td>
+                    <td className="px-gutter-lg py-gutter-md whitespace-nowrap font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant max-w-[150px] truncate" title={tx.nomor_bukti}>{tx.nomor_bukti}</td>
+                    <td className="px-gutter-lg py-gutter-md whitespace-nowrap font-body text-body-md max-w-[140px] truncate" title={tx.nama_kategori}>{tx.nama_kategori}</td>
                     <td className="px-gutter-lg py-gutter-md font-body text-body-md max-w-xs truncate" title={tx.uraian_transaksi}>{tx.uraian_transaksi}</td>
                     <td className="px-gutter-lg py-gutter-md text-right tabular-nums whitespace-nowrap font-label text-label-lg">{formatRupiah(tx.nominal)}</td>
                     <td className="px-gutter-lg py-gutter-md whitespace-nowrap">
@@ -106,11 +106,16 @@ export default function TransactionTable({
           ) : (
             paginatedRows.map((tx) => (
               <li key={tx.id} className="p-gutter-md flex flex-col gap-gutter-xs">
-                <div className="flex items-center justify-between gap-gutter-sm">
-                  <span className="font-mono text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
-                    {tx.nomor_bukti} · {tx.tanggal}
-                  </span>
-                  <span className={`px-gutter-sm py-gutter-xs rounded-full font-label text-label-sm ${
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-mono text-mono-xs sm:text-mono-sm text-light-on-surface-variant dark:text-dark-on-surface-variant truncate max-w-[200px]" title={tx.nomor_bukti}>
+                      {tx.nomor_bukti}
+                    </span>
+                    <span className="font-body text-body-xs text-light-on-surface-variant/70">
+                      {tx.tanggal}
+                    </span>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded-full font-label text-label-xs flex-shrink-0 ${
                     tx.status === 'Terverifikasi'
                       ? 'bg-light-secondary-container text-light-on-secondary-container dark:bg-dark-secondary-container dark:text-dark-on-secondary-container'
                       : 'bg-light-warning-container text-light-on-warning-container dark:bg-dark-warning-container dark:text-dark-on-warning-container'
@@ -118,14 +123,14 @@ export default function TransactionTable({
                     {tx.status}
                   </span>
                 </div>
-                <p className="font-body text-body-md text-light-on-surface dark:text-dark-on-surface">
+                <p className="font-body text-body-sm text-light-on-surface dark:text-dark-on-surface line-clamp-2">
                   {tx.uraian_transaksi}
                 </p>
-                <div className="flex items-center justify-between gap-gutter-sm pt-gutter-xs">
-                  <span className="font-body text-body-sm text-light-on-surface-variant dark:text-dark-on-surface-variant">
+                <div className="flex items-center justify-between gap-2 pt-1 border-t border-light-outline-variant/40 dark:border-dark-outline-variant/40">
+                  <span className="font-body text-body-xs text-light-on-surface-variant dark:text-dark-on-surface-variant truncate max-w-[160px]">
                     {tx.nama_kategori}
                   </span>
-                  <span className="font-label text-label-lg tabular-nums">
+                  <span className="font-label text-label-md tabular-nums flex-shrink-0 font-semibold text-emerald">
                     {formatRupiah(tx.nominal)}
                   </span>
                 </div>
