@@ -7,6 +7,7 @@ import TrendChart from '@/components/TrendChart';
 import CategoryDonut from '@/components/CategoryDonut';
 import TransactionTable from '@/components/TransactionTable';
 import CSVImportModal from '@/components/CSVImportModal';
+import EditTargetModal from '@/components/EditTargetModal';
 import { FilterState, Transaction, TargetBudget } from '@/lib/types';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 
@@ -50,6 +51,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRealtimeConnected, setIsRealtimeConnected] = React.useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
+  const [isEditTargetModalOpen, setIsEditTargetModalOpen] = React.useState(false);
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -97,14 +99,23 @@ export default function DashboardPage() {
     }
 
     const channel = supabase
-      .channel('realtime:dashboard_transactions')
+      .channel('realtime:dashboard_data')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'transactions' },
         (payload) => {
-          console.log('Realtime postgres change received:', payload);
+          console.log('Realtime transactions change received:', payload);
           loadData();
-          showToast(`⚡ Realtime Update: Data pendapatan baru tersinkronisasi!`);
+          showToast(`⚡ Realtime: Data transaksi baru tersinkronisasi!`);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'targets' },
+        (payload) => {
+          console.log('Realtime targets change received:', payload);
+          loadData();
+          showToast(`⚡ Realtime: Target Anggaran berhasil diperbarui!`);
         }
       )
       .subscribe((status) => {
@@ -178,6 +189,7 @@ export default function DashboardPage() {
           persentaseCapaian={summary.persentaseCapaian}
           sisaTarget={summary.sisaTarget}
           surplus={summary.surplus}
+          onEditTarget={() => setIsEditTargetModalOpen(true)}
         />
 
         {/* Charts Section: Left (Dual-Axis Trend) & Right (Donut Category) */}
@@ -206,6 +218,17 @@ export default function DashboardPage() {
         onClose={() => setIsImportModalOpen(false)}
         onSuccess={(count) => {
           showToast(`Berhasil mengimpor dan menyinkronkan ${count} transaksi!`);
+          loadData();
+        }}
+      />
+
+      {/* Edit Target Anggaran Modal */}
+      <EditTargetModal
+        isOpen={isEditTargetModalOpen}
+        currentTarget={target}
+        onClose={() => setIsEditTargetModalOpen(false)}
+        onSuccess={(updated) => {
+          showToast(`Target Anggaran berhasil diperbarui: Rp ${updated.total_target.toLocaleString('id-ID')}`);
           loadData();
         }}
       />

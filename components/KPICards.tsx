@@ -8,6 +8,7 @@ interface KPICardsProps {
   persentaseCapaian: number;
   sisaTarget: number;
   surplus: number;
+  onEditTarget?: () => void;
 }
 
 export function formatRupiah(num: number): string {
@@ -24,6 +25,7 @@ export default function KPICards({
   persentaseCapaian,
   sisaTarget,
   surplus,
+  onEditTarget,
 }: KPICardsProps) {
   // SVG circular gauge calculations
   // circumference of radius 32 = 2 * PI * 32 = ~201.06
@@ -116,9 +118,22 @@ export default function KPICards({
           <h2 className="font-label text-label-md text-light-on-surface-variant dark:text-dark-on-surface-variant">
             Target Anggaran
           </h2>
-          <span className="material-symbols-outlined text-title-md text-light-tertiary dark:text-dark-tertiary" aria-hidden="true">
-            flag
-          </span>
+          <div className="flex items-center gap-gutter-xs">
+            {onEditTarget && (
+              <button
+                onClick={onEditTarget}
+                type="button"
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-light-outline-variant dark:border-dark-outline-variant font-label text-xs text-light-tertiary dark:text-dark-tertiary hover:border-indigo hover:bg-light-surface-container dark:hover:bg-dark-surface-container transition-colors"
+                title="Ubah Target Anggaran"
+              >
+                <span className="material-symbols-outlined text-sm" aria-hidden="true">edit</span>
+                <span>Ubah</span>
+              </button>
+            )}
+            <span className="material-symbols-outlined text-title-md text-light-tertiary dark:text-dark-tertiary" aria-hidden="true">
+              flag
+            </span>
+          </div>
         </header>
         <div className="flex flex-col gap-gutter-xs">
           <p className="font-headline text-headline-lg text-light-on-surface dark:text-dark-on-surface tabular-nums">

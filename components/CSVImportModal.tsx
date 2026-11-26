@@ -84,15 +84,24 @@ export default function CSVImportModal({
   const downloadSampleTemplate = () => {
     const csvContent =
       'tanggal,kode_rekening,nama_kategori,uraian_transaksi,nominal,nomor_bukti\n' +
-      '2026-11-25,4.1.2.01.01,Retribusi Pasar,Setoran Harian Kios Pasar Induk,24500000,STS-2026-1145\n' +
-      '2026-11-25,4.1.2.02.01,Retribusi Parkir,Parkir Tepi Jalan Umum,14250000,STS-2026-1144\n' +
-      '2026-11-24,4.1.2.01.02,Retribusi Kebersihan,Persampahan Kawasan Niaga,11800000,STS-2026-1143\n';
+      '2026-11-02,4.1.2.01.01,Retribusi Pasar,Setoran Harian Kios Pasar Induk Blok A,18500000,STS-202611-0101\n' +
+      '2026-11-03,4.1.2.02.01,Retribusi Parkir,Parkir Tepi Jalan Umum Sektor Utara,12300000,STS-202611-0102\n' +
+      '2026-11-04,4.1.2.01.02,Retribusi Kebersihan,Iuran Persampahan Wilayah Niaga Sentral,9400000,STS-202611-0103\n' +
+      '2026-11-05,4.1.2.03.01,Pemanfaatan Aset Daerah,Sewa Gedung Pertemuan Graha Praja,15000000,STS-202611-0104\n' +
+      '2026-11-06,4.1.2.02.02,Retribusi Terminal,Retribusi Layanan Peron Terminal Tipe B,8750000,STS-202611-0105\n' +
+      '2026-11-08,4.1.2.01.01,Retribusi Pasar,Setoran Los Basah Pasar Baru Selatan,21400000,STS-202611-0106\n' +
+      '2026-11-09,4.1.2.02.01,Retribusi Parkir,Setoran Harian Parkir Kawasan Kuliner,16800000,STS-202611-0107\n' +
+      '2026-11-10,4.1.2.01.02,Retribusi Kebersihan,Retribusi Sampah Kawasan Industri Kecil,14200000,STS-202611-0108\n' +
+      '2026-11-15,4.1.2.01.01,Retribusi Pasar,Sewa Kios Semi Permanen Blok C,28400000,STS-202611-0112\n' +
+      '2026-11-20,4.1.2.01.01,Retribusi Pasar,Retribusi Los Buah & Sayur Segar,17800000,STS-202611-0117\n' +
+      '2026-11-25,4.1.2.02.01,Retribusi Parkir,Rekap Parkir Tepi Jalan Umum Zona Pusat,14250000,STS-202611-0123\n' +
+      '2026-11-26,4.1.2.03.01,Pemanfaatan Aset Daerah,Sewa Fasilitas Aula & Stand Pameran,32000000,STS-202611-0125\n';
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'template_rekap_pendapatan.csv');
+    link.setAttribute('download', 'contoh_data_rekap_pendapatan.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
